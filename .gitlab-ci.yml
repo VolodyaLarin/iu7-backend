@@ -2,7 +2,7 @@ image: node:latest
 
 cache:
   paths:
-    - node_modules/
+    - src/node_modules/
 
 linter:
   script:
@@ -23,5 +23,5 @@ coverage:
     - npm run coverage
   artifacts:
     paths:
-      - coverage
+      - src/coverage
     expire_in: 30 days
