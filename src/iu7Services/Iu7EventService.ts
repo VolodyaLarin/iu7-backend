@@ -4,10 +4,12 @@ import EventService, {
   EventModel,
 } from "../services/EventService";
 
+
+
 export default class Iu7EventService implements EventService {
   protected repo: EventRepository;
 
-  constructor(repo: EventRepository) {
+  constructor(repo: EventRepository ) {
     this.repo = repo;
   }
   async create(event: EventModel): Promise<EventModel> {

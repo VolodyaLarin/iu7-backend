@@ -5,6 +5,7 @@ export interface EventModel {
     date:Date;
     group: string;
     speaker?: string;
+    type?: string;
     subject: string;
     place?: string;
     theme: string;
