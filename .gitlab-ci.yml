@@ -1,0 +1,27 @@
+image: node:latest
+
+cache:
+  paths:
+    - node_modules/
+
+linter:
+  script:
+    - cd ./src
+    - npm install
+    - npm run lint
+
+tests:
+  script:
+    - cd ./src
+    - npm install
+    - npm run test
+
+coverage:
+  script:
+    - cd ./src
+    - npm install
+    - npm run coverage
+  artifacts:
+    paths:
+      - coverage
+    expire_in: 30 days
