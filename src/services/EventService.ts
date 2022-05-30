@@ -8,7 +8,7 @@ export interface EventModel {
     type?: string;
     subject: string;
     place?: string;
-    theme: string;
+    theme?: string;
     description?: string;
     visits?: VisitModel[];
 }

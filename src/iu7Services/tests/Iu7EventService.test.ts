@@ -43,6 +43,9 @@ describe("Event Service", () => {
     updateById: mockReturnOne(),
     deleteById: jest.fn(async () => true),
     create: mockReturnOne(),
+    getByFilterWithVisits: function () {
+      throw new Error("Function not implemented.");
+    }
   };
 
 

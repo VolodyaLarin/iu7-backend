@@ -5,6 +5,9 @@ export default interface EventRepository extends Repository<EventModel> {
   getByFilter: (
     filters: EventFilterModel
   ) => Promise<EventModel[]>;
+  getByFilterWithVisits: (
+    filters: EventFilterModel
+  ) => Promise<EventModel[]>;
   syncVisits: (id: string, users: string[]) => Promise<EventModel>;
   visit: (id: string, user: string) => Promise<EventModel>;
 

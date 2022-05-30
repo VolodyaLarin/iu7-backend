@@ -1,5 +1,6 @@
 import { UserModel } from "./AuthService";
 import { EventModel } from "./EventService";
+import { FieldModel } from "./StudentService";
 
 
 export interface GroupMetaModel {
@@ -10,7 +11,8 @@ export interface GroupMetaModel {
 export default interface GroupService {
     getEvents: (group:string, date: Date) => Promise<EventModel[]>
     getVisits: (group:string, date: Date) => Promise<EventModel[]>
-    getStudents: (group:string, date: Date) => Promise<UserModel[]>
-    getStudentFields: (group:string, date: Date) => Promise<GroupMetaModel>
+    getStudents: (group:string) => Promise<UserModel[]>
+    getMeta: (group:string) => Promise<GroupMetaModel>
+    getStudentFields: (group:string) => Promise<FieldModel[]>
     syncDay: (group:string, date:Date) => Promise<EventModel[]>;
 }

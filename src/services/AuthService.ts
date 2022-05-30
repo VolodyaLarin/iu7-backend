@@ -1,3 +1,4 @@
+import { ContingentModel } from "../repositories/contingent";
 import { StudentModel } from "./StudentService";
 
 export interface UserModel {
@@ -6,7 +7,7 @@ export interface UserModel {
     login: string;
     contingentLogin: string;
     photo?: string;
-    contingent?: null;
+    contingent?: ContingentModel;
     student?: StudentModel;
 }
 

@@ -67,14 +67,75 @@ const letters = {
   ю: "yu",
 };
 
-function transliterate(word) {
+const lettersFrom = {
+  YO: "Ё",
+  TS: "Ц",
+  U: "У",
+  K: "К",
+  E: "Е",
+  N: "Н",
+  G: "Г",
+  SH: "Ш",
+  SCH: "Щ",
+  Z: "З",
+  H: "Х",
+  yo: "ё",
+  ts: "ц",
+  u: "у",
+  k: "к",
+  e: "е",
+  n: "н",
+  g: "г",
+  sh: "ш",
+  sch: "щ",
+  z: "з",
+  h: "х",
+  F: "Ф",
+  V: "В",
+  A: "А",
+  P: "П",
+  R: "Р",
+  O: "О",
+  L: "Л",
+  D: "Д",
+  ZH: "Ж",
+  f: "ф",
+  v: "в",
+  a: "а",
+  p: "п",
+  r: "р",
+  o: "о",
+  l: "л",
+  d: "д",
+  zh: "ж",
+  Ya: "Я",
+  CH: "Ч",
+  S: "С",
+  M: "М",
+  I: "И",
+  T: "Т",
+  B: "Б",
+  YU: "Ю",
+  ya: "я",
+  ch: "ч",
+  s: "с",
+  m: "м",
+  i: "и",
+  t: "т",
+  b: "б",
+  yu: "ю",
+};
+
+function transliterate(word, l) {
   return word
     .split("")
     .map(function (char) {
       // eslint-disable-next-line no-prototype-builtins
-      return letters.hasOwnProperty(char) ? letters[char] : char;
+      return l.hasOwnProperty(char) ? l[char] : char;
     })
     .join("");
 }
 
-export default transliterate;
+export default (word) => transliterate(word, letters);
+
+export const reverseTransliterate = (word) => transliterate(word, lettersFrom);

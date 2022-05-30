@@ -13,9 +13,9 @@ describe("Event Sync Service", () => {
     TranslitService
   );
 
-  it("load schedule", async () => {
-    await service.getTimetable("ИУ7-64Б");
-  });
+//   it("load schedule", async () => {
+//     await service.getTimetable("ИУ7-64Б");
+//   });
   it("select day", async () => {
     service.getTimetable = async () => {
       return {

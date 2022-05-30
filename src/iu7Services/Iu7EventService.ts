@@ -32,13 +32,5 @@ export default class Iu7EventService implements EventService {
     await this.repo.visit(eventId, userId);
   }
 
-//   async syncDay(date: Date): Promise<EventModel[]> {
-//     const events = await this.syncService.getEvents(date);
 
-//     const createdEvents = await Promise.all<Promise<EventModel>[]>(
-//       events.map((event) => this.repo.create(event))
-//     );
-
-//     return createdEvents;
-//   }
 }

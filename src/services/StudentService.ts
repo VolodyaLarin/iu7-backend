@@ -6,6 +6,6 @@ export type FieldModel = {
   fieldLabel: string;
 };
 export default interface StudentService {
-  updateStudent: (id: string, student: StudentModel) => Promise<void>;
+  updateStudent: (id: string, student: StudentModel) => Promise<StudentModel>;
   updateFields: (group: string, fields: FieldModel[]) => Promise<void>;
 }

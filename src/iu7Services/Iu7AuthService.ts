@@ -1,6 +1,7 @@
 import UserRepository from "../repositories/user";
 import AuthService, { UserModel } from "../services/AuthService";
 import CasService from "../services/CasService";
+import { reverseTransliterate } from "./TranslitService";
 
 type TokenCreator = () => string;
 
@@ -31,14 +32,19 @@ export default class Iu7AuthService implements AuthService {
     const login = casRes.login;
 
     let user = await this.repo.getByLogin(login);
+
+    const contingentLogin = reverseTransliterate(
+      login.substring(login.search(/[0-9]/))
+    );
+    
     if (!user) {
       user = await this.repo.create({
-          login,
-          token: this.tokenCreator(),
-          contingentLogin: login
+        login,
+        token: this.tokenCreator(),
+        contingentLogin,
       });
     }
 
-    return user.token
+    return user.token;
   }
 }
