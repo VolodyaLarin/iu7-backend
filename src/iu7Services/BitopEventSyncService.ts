@@ -1,6 +1,8 @@
 import { EventModel } from "../services/EventService";
 import EventSyncService from "../services/EventSyncService";
 
+import config from "config";
+
 type EventRes = EventModel & {
   startAt: number[];
 };
@@ -27,22 +29,25 @@ interface BitopSheduleAnswer {
 }
 
 import axios, { AxiosInstance } from "axios";
+import { injectable } from "inversify";
+import TranslitService from "./TranslitService";
 
 export type TranslitFun = (s: string) => string;
 
+@injectable()
 export default class BitopEventSyncService implements EventSyncService {
   axios: AxiosInstance;
   translit: TranslitFun;
 
-  constructor(api_url: string, api_token: string, translit: TranslitFun) {
-    this.translit = translit;
+  constructor() {
+    this.translit = TranslitService;
 
     this.axios = axios.create();
-    this.axios.defaults.baseURL = api_url;
+    this.axios.defaults.baseURL = config.get("bitop.api_url");
     this.axios.interceptors.request.use(
-      (config) => {
-        config.headers["x-bb-token"] = api_token;
-        return config;
+      (conf) => {
+        conf.headers["x-bb-token"] = config.get("bitop.api_token");
+        return conf;
       },
       null,
       { synchronous: true }
@@ -59,13 +64,19 @@ export default class BitopEventSyncService implements EventSyncService {
 
     const weekT = weekN % 2 == 0 ? "oddWeekEvents" : "evenWeekEvents";
 
-    return sh[weekT][dayN].map((x) =>
-      Object.assign({}, x, {
-        date: new Date(
-          date.getTime() + (x.startAt[0] * 60 + x.startAt[1]) * 60 * 1000
-        ),
-      })
-    );
+    return sh[weekT][dayN].map((x) => {
+      const dateTime = new Date(
+        date.getTime() + (x.startAt[0] * 60 + x.startAt[1]) * 60 * 1000
+      );
+      return {
+        date: dateTime,
+        group: x.group,
+        subject: x.subject,
+        place: x.place,
+        speaker: x.speaker,
+        type: x.type,
+      };
+    });
   }
   async getTimetable(group: string): Promise<EventSyncModel> {
     const translitGroup = this.translit(group);

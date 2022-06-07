@@ -1,14 +1,18 @@
+import { inject, injectable } from "inversify";
 import EventRepository from "../repositories/event";
 import UserRepository from "../repositories/user";
 import { EventFilterModel } from "../services/EventService";
 import StatsService, { StatsModel } from "../services/StatsService";
 
+@injectable()
 export default class Iu7StatsService implements StatsService {
   repo: EventRepository;
   userRepo: UserRepository;
 
-  
-  constructor(repo: EventRepository, userRepo: UserRepository) {
+  constructor(
+    @inject("EventRepository") repo: EventRepository,
+    @inject("UserRepository") userRepo: UserRepository
+  ) {
     this.repo = repo;
     this.userRepo = userRepo;
   }

@@ -2,6 +2,7 @@ import { UserModel } from "./AuthService";
 import { EventFilterModel } from "./EventService";
 
 export interface VisitModel {
+  id?: string;
   userId: string;
   eventId: string;
   user?: UserModel;
@@ -22,6 +23,9 @@ export interface StatsScoreModel {
 }
 
 export default interface StatsService {
-  visitScore: (studentId:string, days?: number) => Promise<StatsScoreModel>;
-  visitsByGroup: (group: string, filters: EventFilterModel) => Promise<StatsModel[]>;
+  visitScore: (studentId: string, days?: number) => Promise<StatsScoreModel>;
+  visitsByGroup: (
+    group: string,
+    filters: EventFilterModel
+  ) => Promise<StatsModel[]>;
 }

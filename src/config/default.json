@@ -1,0 +1,22 @@
+{
+  "port":8081,
+  "knex": {
+    "client": "better-sqlite3",
+    "connection": {
+      "filename": "./sqlRepositories/databases/dev.sqlite3"
+    },
+    "useNullAsDefault": true
+  },
+  "mongodb": {
+    "url": "mongodb://mongoadmin:secret@localhost:27017/",
+    "database": "db"
+  },
+  "cas": {
+    "redirectUrl": "http://localhost:8081/cas/auth/",
+    "casUrl": "https://proxy.bmstu.ru:8443"
+  },
+  "bitop": {
+    "api_url": "https://api.bitop.bmstu.ru",
+    "api_token": "bb-at-qdqgelbp9wchnv1m9chx76ysdptv89pgvhrnh7e2ptl1n"
+  }
+}

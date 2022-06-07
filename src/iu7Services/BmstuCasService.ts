@@ -1,31 +1,42 @@
+import { inject, injectable } from "inversify";
 import CasService, { CasResultModel } from "../services/CasService";
+import config from "config"
 
-interface CasHttpClient {
-  send(url: string, body?: string): Promise<{
-      body: ReadableStream<Uint8Array> | string
+export interface CasHttpClient {
+  send(
+    url: string,
+    body?: string
+  ): Promise<{
+    body: string;
   }>;
 }
-type CasXmlParser = (
-  input: string | ReadableStream<Uint8Array>
-) => Record<string, unknown>;
+export type CasXmlParser = (input: string) => Record<string, unknown>;
 
-
+@injectable()
 export default class BmstuCasService implements CasService {
   protected client: CasHttpClient;
-  protected xmlParser: CasXmlParser;
+  protected xmlParser?: CasXmlParser;
+  protected casUrl:string;
+  protected redirectUrl:string;
 
-  constructor(client: CasHttpClient, xmlParser:CasXmlParser) {
+  constructor(
+    @inject("CasHttpClient") client: CasHttpClient,
+    @inject("CasXmlParser") xmlParser: CasXmlParser | null = null
+  ) {
     this.client = client;
-    this.xmlParser = xmlParser
+    this.xmlParser = xmlParser;
+    this.casUrl = config.get("cas.casUrl");
+    this.redirectUrl = config.get("cas.redirectUrl");
+
   }
 
   generateLink() {
-    return "https://proxy.bmstu.ru:8443/cas/login?service=https://xn--7-otb7a.xn--p1ai/api/cas";
+    return this.casUrl + "/cas/login?service=" + this.redirectUrl;
   }
 
   async checkTicket(ticket: string): Promise<CasResultModel> {
     const res = await this.client.send(
-      "https://proxy.bmstu.ru:8443/cas/proxyValidate?service=https://xn--7-otb7a.xn--p1ai/api/cas&ticket=" +
+      this.casUrl + "/cas/proxyValidate?service=" + this.redirectUrl + "&ticket=" +
         ticket
     );
 
@@ -33,10 +44,12 @@ export default class BmstuCasService implements CasService {
       throw "Service error";
     }
 
-    const answer = this.xmlParser(res.body);
+    const answer = this.xmlParser ? this.xmlParser(res.body) : res.body;
 
-    if (answer["cas:authenticationSuccess"]) {
-      const login = answer["cas:authenticationSuccess"]["cas:user"];
+    console.log(answer["cas:serviceResponse"]);
+
+    if (answer["cas:serviceResponse"]["cas:authenticationSuccess"]) {
+      const login = answer["cas:serviceResponse"]["cas:authenticationSuccess"]["cas:user"];
 
       if (!login) {
         throw "Service Error";

@@ -2,8 +2,9 @@
   "name": "app",
   "version": "1.0.0",
   "description": "",
-  "main": "app.ts",
   "scripts": {
+    "dev": "nodemon",
+    "build": "tsc app.ts --outDir dist",
     "test": "jest",
     "coverage": "jest --coverage",
     "lint": "eslint iu7Services repositories services"
@@ -11,16 +12,47 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-typescript": "^7.17.12",
     "@types/axios": "^0.14.0",
     "@types/jest": "^27.5.1",
+    "@types/shelljs": "^0.8.11",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
+    "babel-cli": "^6.26.0",
     "eslint": "^8.16.0",
     "jest": "^28.1.0",
-    "ts-jest": "^28.0.3"
+    "shelljs": "^0.8.5",
+    "ts-jest": "^28.0.3",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.7.2",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/plugin-transform-runtime": "^7.18.2",
+    "@types/ajv": "^1.0.0",
+    "ajv": "^6.12.6",
     "axios": "^0.27.2",
-    "cyrillic-to-translit-js": "^3.2.1"
+    "better-sqlite3": "^7.5.3",
+    "config": "^3.3.7",
+    "fast-xml-parser": "^4.0.8",
+    "inversify": "^6.0.1",
+    "inversify-express-utils": "^6.4.3",
+    "knex": "^2.1.0",
+    "mongodb": "^4.6.0",
+    "nodemon": "^2.0.16",
+    "reflect-metadata": "^0.1.13",
+    "swagger-express-ts": "^1.1.0",
+    "swagger-ui-dist": "^4.11.1",
+    "ts-node": "^10.8.0"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "."
+    ],
+    "ext": "ts",
+    "exec": "ts-node app.ts"
   }
 }

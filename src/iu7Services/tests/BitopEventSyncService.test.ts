@@ -1,21 +1,13 @@
-import BitopEventSyncService from "../BitopEventSyncService";
-import TranslitService from "../TranslitService";
+import "reflect-metadata";
 
-const config = {
-    BITOP_API: "https://api.bitop.bmstu.ru",
-    BITOP_TOKEN: "NOT To COMMIT",
-}
+import BitopEventSyncService from "../BitopEventSyncService";
 
 describe("Event Sync Service", () => {
-  const service = new BitopEventSyncService(
-    config.BITOP_API,
-    config.BITOP_TOKEN,
-    TranslitService
-  );
+  const service = new BitopEventSyncService();
 
-//   it("load schedule", async () => {
-//     await service.getTimetable("ИУ7-64Б");
-//   });
+  it("load schedule", async () => {
+    await service.getTimetable("ИУ7-64Б");
+  });
   it("select day", async () => {
     service.getTimetable = async () => {
       return {

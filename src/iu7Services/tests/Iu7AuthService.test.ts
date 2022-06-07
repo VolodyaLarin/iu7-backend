@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import UserRepository from "../../repositories/user";
 import { UserModel } from "../../services/AuthService";
 import CasService, { CasResultModel } from "../../services/CasService";

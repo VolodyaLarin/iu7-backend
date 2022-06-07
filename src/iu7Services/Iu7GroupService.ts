@@ -1,3 +1,4 @@
+import { inject, injectable } from "inversify";
 import EventRepository from "../repositories/event";
 import StudentRepository from "../repositories/student";
 import UserRepository from "../repositories/user";
@@ -7,6 +8,7 @@ import EventSyncService from "../services/EventSyncService";
 import GroupService, { GroupMetaModel } from "../services/GroupService";
 import { FieldModel } from "../services/StudentService";
 
+@injectable()
 export default class Iu7GroupService implements GroupService {
   protected eventRepository: EventRepository;
   protected userRepository: UserRepository;
@@ -14,10 +16,10 @@ export default class Iu7GroupService implements GroupService {
   protected syncService: EventSyncService;
 
   constructor(
-    eventRepository: EventRepository,
-    userRepository: UserRepository,
-    studentRepository: StudentRepository,
-    syncService: EventSyncService
+    @inject("EventRepository") eventRepository: EventRepository,
+    @inject("UserRepository") userRepository: UserRepository,
+    @inject("StudentRepository") studentRepository: StudentRepository,
+    @inject("EventSyncService") syncService: EventSyncService
   ) {
     this.eventRepository = eventRepository;
     this.userRepository = userRepository;
@@ -25,7 +27,7 @@ export default class Iu7GroupService implements GroupService {
     this.syncService = syncService;
   }
   async getEvents(group: string, date: Date): Promise<EventModel[]> {
-    const dateStr = date.toUTCString().split("T")[0];
+    const dateStr = date.toISOString().split("T")[0];
     return await this.eventRepository.getByFilter({
       group,
       date: {
@@ -45,7 +47,14 @@ export default class Iu7GroupService implements GroupService {
     });
   }
   async getStudents(group: string): Promise<UserModel[]> {
-    return await this.userRepository.getByGroup(group);
+    const users = await this.userRepository.getByGroup(group);
+
+    return await Promise.all(users.map(async (user) => {
+      const student = await this.studentRepository.getByUserId(user.id);
+      return Object.assign({}, user, {
+        student,
+      });
+    }));
   }
   async getStudentFields(group: string): Promise<FieldModel[]> {
     return await this.studentRepository.getFieldsByGroup(group);

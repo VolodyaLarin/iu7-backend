@@ -28,6 +28,7 @@ export default interface EventService {
     update: (event:EventModel)=> Promise<EventModel>;
     delete: (eventId: string)=> Promise<void>;
     filter: (filter:EventFilterModel)=> Promise<EventModel[]>;
+    get: (id:string)=> Promise<EventModel|null>;
     syncVisits: (eventId:string, userIds: string[]) => Promise<void>;
     addVisit: (eventId:string, userId: string) => Promise<void>;
 }

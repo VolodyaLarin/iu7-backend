@@ -1,4 +1,8 @@
-export type StudentModel = Record<string, unknown>;
+export type StudentModel = {
+  id: string;
+  userID: string;
+  [key: string]: unknown;
+};
 
 export type FieldModel = {
   fieldType: "string" | "boolean";

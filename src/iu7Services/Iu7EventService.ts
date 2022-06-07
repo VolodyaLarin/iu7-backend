@@ -1,16 +1,19 @@
+import { inject, injectable } from "inversify";
 import EventRepository from "../repositories/event";
 import EventService, {
   EventFilterModel,
   EventModel,
 } from "../services/EventService";
 
-
-
+@injectable()
 export default class Iu7EventService implements EventService {
   protected repo: EventRepository;
 
-  constructor(repo: EventRepository ) {
+  constructor(@inject("EventRepository") repo: EventRepository) {
     this.repo = repo;
+  }
+  get(id: string): Promise<EventModel> {
+    return this.repo.getById(id);
   }
   async create(event: EventModel): Promise<EventModel> {
     return await this.repo.create(event);
@@ -31,6 +34,4 @@ export default class Iu7EventService implements EventService {
   async addVisit(eventId: string, userId: string): Promise<void> {
     await this.repo.visit(eventId, userId);
   }
-
-
 }

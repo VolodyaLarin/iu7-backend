@@ -1,19 +1,22 @@
+import { inject, injectable } from "inversify";
 import UserRepository from "../repositories/user";
 import AuthService, { UserModel } from "../services/AuthService";
 import CasService from "../services/CasService";
 import { reverseTransliterate } from "./TranslitService";
 
-type TokenCreator = () => string;
 
+export type TokenCreator = () => string;
+
+@injectable()
 export default class Iu7AuthService implements AuthService {
   protected repo: UserRepository;
   protected cas: CasService;
   protected tokenCreator: TokenCreator;
 
   constructor(
-    cas: CasService,
-    repo: UserRepository,
-    tokenCreator: TokenCreator
+    @inject("CasService") cas: CasService,
+    @inject("UserRepository") repo: UserRepository,
+    @inject("TokenCreator") tokenCreator: TokenCreator,
   ) {
     this.repo = repo;
     this.cas = cas;
@@ -25,7 +28,7 @@ export default class Iu7AuthService implements AuthService {
   }
   async checkTicket(ticket: string): Promise<string> {
     const casRes = await this.cas.checkTicket(ticket);
-
+    
     if (casRes.status !== "ok") {
       return null;
     }

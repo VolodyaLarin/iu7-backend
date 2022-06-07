@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import EventRepository from "../../repositories/event";
 import UserRepository from "../../repositories/user";
 import { UserModel } from "../../services/AuthService";

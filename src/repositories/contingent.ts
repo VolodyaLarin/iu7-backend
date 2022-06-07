@@ -1,6 +1,7 @@
 import Repository from "./repository";
 
 export interface ContingentModel {
+  id?: string;
   login: string;
   surname: string;
   name: string;

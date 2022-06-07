@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import EventRepository from "../../repositories/event";
 import EventService, {
   EventFilterModel,

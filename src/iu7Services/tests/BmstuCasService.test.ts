@@ -1,18 +1,22 @@
+import "reflect-metadata";
+
 import BmstuCasService from "../BmstuCasService";
 
 describe("Cas Service", () => {
   const CLIENT_TOKEN = "CLIENT_TOKEN";
   const HttpClient = {
     async send() {
-      return {body:CLIENT_TOKEN};
+      return { body: CLIENT_TOKEN };
     },
   };
 
   it("Success login", async () => {
     const service = new BmstuCasService(HttpClient, () => {
       return {
-        "cas:authenticationSuccess": {
-          "cas:user": "lvn19u232",
+        "cas:serviceResponse": {
+          "cas:authenticationSuccess": {
+            "cas:user": "lvn19u232",
+          },
         },
       };
     });
@@ -25,7 +29,9 @@ describe("Cas Service", () => {
   it("Unsuccess login", async () => {
     const service = new BmstuCasService(HttpClient, () => {
       return {
-        "cas:authenticationError": "incorrect ticket",
+        "cas:serviceResponse": {
+          "cas:authenticationError": "incorrect ticket",
+        },
       };
     });
 
@@ -41,9 +47,8 @@ describe("Cas Service", () => {
 
     const res = service.generateLink();
 
-    expect(res).toContain("cas/login")
+    expect(res).toContain("cas/login");
     expect(res).toContain("service=");
     expect(res).toContain("?");
-
   });
 });
