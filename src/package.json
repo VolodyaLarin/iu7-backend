@@ -4,10 +4,10 @@
   "description": "",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc app.ts --outDir dist",
+    "build": "tsc --outDir dist --project tsconfig.json",
     "test": "jest",
     "coverage": "jest --coverage",
-    "lint": "eslint iu7Services repositories services"
+    "lint": "eslint iu7Services repositories services sqlRepositories"
   },
   "author": "",
   "license": "ISC",

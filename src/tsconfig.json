@@ -10,7 +10,7 @@
       "noImplicitAny": false,
 
     },
-    "include": ["**/*"],
+    "include": ["app.ts"],
     "exclude": ["node_modules", "**/*.spec.ts"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

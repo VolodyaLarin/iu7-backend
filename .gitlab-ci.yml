@@ -25,3 +25,13 @@ coverage:
     paths:
       - src/coverage
     expire_in: 30 days
+
+build:
+  script:
+    - cd ./src
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - src/dist
+    expire_in: 30 days
