@@ -42,15 +42,13 @@ export class MongoStudentRepository implements StudentRepository {
     userId: string,
     e: Omit<StudentModel, "id">
   ): Promise<StudentModel> {
-    // const _id = new ObjectId(id);
+    delete e._id 
     await this.db.collection("students").updateOne(
       {
-        // _id,
         userId,
       },
       {
         $set: Object.assign({}, e, {
-          // _id,,
           userId,
         }),
       },

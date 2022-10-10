@@ -1,12 +1,8 @@
 {
   "port":8055,
-  "knex": {
-    "client": "postgresql",
-    "connection": {
-      "database": "postgres",
-      "user":     "postgres",
-      "password": "1234"
-    }
+  "knex":  {
+    "client": "mysql2",
+    "connection": "mysql://root:1234@127.0.0.1:3306/mydb?charset=utf8_bin"
   },
   "mongodb": {
     "url": "mongodb://mongoadmin:secret@localhost:27017/",

@@ -49,7 +49,7 @@ describe("Auth Service", () => {
     getByGroup: function (): Promise<UserModel[]> {
       throw new Error("Function not implemented.");
     },
-    getByLogin: async function (login: string): Promise<UserModel> {
+    getByLogin: async function (login: string): Promise<UserModel | null> {
       if (login != LOGIN) return null;
       return CORRECT_USER;
     },

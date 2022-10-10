@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import * as bodyParser from "body-parser";
+import morgan from 'morgan';
 
 import { Container } from "inversify";
 import {
@@ -51,11 +52,15 @@ import { Iu7StudentService } from "./iu7Services/Iu7StudentsService";
 import StatsService from "./services/StatsService";
 import Iu7StatsService from "./iu7Services/Iu7StatsService";
 
+import timeout from 'connect-timeout'
+
 const main = async () => {
   const container = new Container();
 
   container.bind<GroupService>("GroupService").to(Iu7GroupService);
-  container.bind<EventSyncService>("EventSyncService").to(BitopEventSyncService);
+  container
+    .bind<EventSyncService>("EventSyncService")
+    .to(BitopEventSyncService);
   container.bind<CasService>("CasService").to(BmstuCasService);
   container.bind<CasHttpClient>("CasHttpClient").to(AxiosCasHttpClient);
   container.bind<AuthService>("AuthService").to(Iu7AuthService);
@@ -64,7 +69,9 @@ const main = async () => {
   container.bind<StatsService>("StatsService").to(Iu7StatsService);
   container.bind<TokenCreator>("TokenCreator").toConstantValue(Iu7TokenCreator);
   container.bind<UserRepository>("UserRepository").to(SqlUserRepository);
-  container.bind<ContingentRepository>("ContingentRepository").to(SqlContingentRepository);
+  container
+    .bind<ContingentRepository>("ContingentRepository")
+    .to(SqlContingentRepository);
   container.bind<EventRepository>("EventRepository").to(SqlEventRepository);
   container.bind<CasXmlParser>("CasXmlParser").toConstantValue(FastXmlParser);
   container.bind<AuthMiddleware>("AuthMiddleware").to(AuthMiddleware);
@@ -75,25 +82,46 @@ const main = async () => {
     .bind<StudentRepository>("StudentRepository")
     .to(MongoStudentRepository);
 
-  const knexInstance = knex(config.get("knex"));
-  container.bind<Knex>("knex").toConstantValue(knexInstance);
+  try {
+    const knexInstance = knex(config.get("knex"));
+    container.bind<Knex>("knex").toConstantValue(knexInstance);
+  } catch (e) {
+    console.error("Can't connect to DB", e);
+  }
 
-  const mongoClient = new MongoClient(config.get("mongodb.url"));
+  try {
+    const mongoClient = new MongoClient(config.get("mongodb.url"));
+    await mongoClient.connect();
+    const mongoDb = mongoClient.db(config.get("mongodb.database"));
+    container.bind<Db>("mongoDb").toConstantValue(mongoDb);
+  } catch (e) {
+    console.error("Can't connect to mongoDB", e);
+  }
 
-  await mongoClient.connect();
 
-  const mongoDb = mongoClient.db(config.get("mongodb.database"));
-  container.bind<Db>("mongoDb").toConstantValue(mongoDb);
-
+const haltOnTimedout = (req, res, next) => {
+  if (!req.timedout) next()
+}
 
   // create server
   const server = new InversifyExpressServer(container);
   server.setConfig((app) => {
+    // app.use(timeout('2s'))
+    app.use(morgan('combined'))
     app.use("/api-docs/swagger", express.static("swagger"));
     app.use(
       "/api-docs/swagger/assets",
       express.static("node_modules/swagger-ui-dist")
     );
+    app.use(haltOnTimedout)
+    app.use((req, res, next) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Headers", "*");
+      res.setHeader("Access-Control-Allow-Methods", "*");
+      next();
+    });
+    app.use(haltOnTimedout)
+
     //
     // add body parser
     app.use(
@@ -101,7 +129,10 @@ const main = async () => {
         extended: true,
       })
     );
+    app.use(haltOnTimedout)
+
     app.use(bodyParser.json());
+    app.use(haltOnTimedout)
 
     app.use(
       swagger.express({
@@ -120,12 +151,13 @@ const main = async () => {
         },
       })
     );
+    app.use(haltOnTimedout)
+
   });
 
   const app = server.build();
   app.listen(config.get("port"));
   console.info("Server is listening on port : " + config.get("port"));
 };
-
 
 main();

@@ -73,7 +73,7 @@ describe("Iu7UserRepository.ts", () => {
       contingentLogin: "new_contingentLogin",
     });
 
-    expect(user.id).toEqual(4);
+    expect(user.id).toEqual(3);
   });
 
   it("get group", async () => {

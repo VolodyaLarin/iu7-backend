@@ -25,7 +25,6 @@ import { inject } from "inversify";
 import EventService, { EventFilterModel } from "../services/EventService";
 import { SchemeFilter } from "./schemes/SchemeFilter";
 
-
 @ApiPath({
   path: "/event",
   name: "Мероприятия",
@@ -45,11 +44,11 @@ export class EventController implements interfaces.Controller {
       theme: { type: "string" },
       description: { type: "string" },
     },
-    required: ["date", "group", "type", "subject"],
+    required: ["date", "type", "subject"],
     additionalProperties: false,
   };
 
-  schemaFilter = SchemeFilter
+  schemaFilter = SchemeFilter;
 
   validate: Ajv.ValidateFunction;
   validateFilter: Ajv.ValidateFunction;
@@ -202,17 +201,8 @@ export class EventController implements interfaces.Controller {
     @response() res: express.Response,
     @next() next: express.NextFunction
   ): Promise<void> {
-    if (!this.validate(req.body)) {
-      res.send({
-        errors: this.validate.errors,
-      });
-      return;
-    }
-
-    const event = await this.es.create(
-      Object.assign({}, req.body, { date: new Date(req.body.date) })
-    );
-    res.json(event);
+    await this.es.delete(id);
+    res.json({});
   }
 
   @ApiOperationPost({

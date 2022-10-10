@@ -11,6 +11,7 @@ export interface GroupMetaModel {
 export default interface GroupService {
     getEvents: (group:string, date: Date) => Promise<EventModel[]>
     getVisits: (group:string, date: Date) => Promise<EventModel[]>
+    getAllVisits: (group:string) => Promise<EventModel[]>
     getStudents: (group:string) => Promise<UserModel[]>
     getMeta: (group:string) => Promise<GroupMetaModel>
     getStudentFields: (group:string) => Promise<FieldModel[]>

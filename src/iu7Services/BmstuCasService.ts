@@ -46,8 +46,6 @@ export default class BmstuCasService implements CasService {
 
     const answer = this.xmlParser ? this.xmlParser(res.body) : res.body;
 
-    console.log(answer["cas:serviceResponse"]);
-
     if (answer["cas:serviceResponse"]["cas:authenticationSuccess"]) {
       const login = answer["cas:serviceResponse"]["cas:authenticationSuccess"]["cas:user"];
 

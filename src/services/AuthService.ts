@@ -9,6 +9,7 @@ export interface UserModel {
     photo?: string;
     contingent?: ContingentModel;
     student?: StudentModel;
+    role?: number;
 }
 
 export default interface AuthService {

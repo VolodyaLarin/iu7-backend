@@ -53,6 +53,26 @@ export class GroupController implements interfaces.Controller {
   }
 
   @ApiOperationGet({
+    path: "/events/visits",
+    parameters: {
+    },
+    description: "Мероприятия c посещениями",
+    responses: {
+      200: { description: "" },
+    },
+  })
+  @httpGet("/events/visits")
+  private async getAllVisits(
+    @request() req: express.Request,
+    @response() res: express.Response,
+    @next() next: express.NextFunction
+  ): Promise<void> {
+    const group = res.locals.user.contingent.group;
+    const events = await this.gs.getAllVisits(group);
+    res.send(events);
+  }
+  
+  @ApiOperationGet({
     path: "/events/{date}",
     parameters: {
       path: {
@@ -126,6 +146,8 @@ export class GroupController implements interfaces.Controller {
     const events = await this.gs.getVisits(group, new Date(date));
     res.send(events);
   }
+
+ 
 
   @ApiOperationGet({
     path: "/meta",

@@ -86,6 +86,7 @@ export class StudentController implements interfaces.Controller {
     @next() next: express.NextFunction
   ): Promise<void> {
     if (!this.validate(req.body)) {
+      res.status(400);
       res.send({
         errors: this.validate.errors,
       });
@@ -97,6 +98,8 @@ export class StudentController implements interfaces.Controller {
     const updated = await this.ss.updateStudent(id, student);
     res.json(updated);
   }
+
+
 
   @ApiOperationPut({
     path: "/fields/{group}",
@@ -127,6 +130,40 @@ export class StudentController implements interfaces.Controller {
       return;
     }
     const fields:FieldModel[] = req.body;
+
+    const updated = await this.ss.updateFields(group, fields);
+    res.json(updated);
+  }
+
+  @ApiOperationPut({
+    path: "/fields",
+    parameters: {
+      path: {
+      },
+      body: {
+        type: "json",
+      },
+    },
+    description: "Обновить событие",
+    responses: {
+      200: { description: "Объект события" },
+    },
+  })
+  @httpPut("/fields")
+  private async putFieldsMyGroup(
+    @request() req: express.Request,
+    @response() res: express.Response,
+    @next() next: express.NextFunction
+  ): Promise<void> {
+    if (!this.validateFields(req.body)) {
+      res.send({
+        errors: this.validate.errors,
+      });
+      return;
+    }
+    const fields:FieldModel[] = req.body;
+
+    const group = res.locals.user.contingent.group;
 
     const updated = await this.ss.updateFields(group, fields);
     res.json(updated);

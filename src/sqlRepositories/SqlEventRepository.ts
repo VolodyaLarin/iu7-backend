@@ -67,7 +67,7 @@ export default class SqlEventRepository implements EventRepository {
   }
 
   async create(e: Omit<EventModel, "id">): Promise<EventModel> {
-    const id = (await this.knex("events").insert([e], "id"))[0].id;
+    const id = String((await this.knex("events").insert([e]))[0]);
     return await this.getById(id);
   }
 
@@ -98,6 +98,12 @@ export default class SqlEventRepository implements EventRepository {
   }
   async syncVisits(id: string, users: string[]): Promise<EventModel> {
     const event = await this.knex("visits").where("event_id", "=", id);
+    await this.knex("visits").where('event_id', '=', id).delete();
+    if (!users.length) {
+      return Object.assign({}, this._mapEvent(event), {
+        visits: [],
+      });
+    }
     const visits = await this.knex("visits").insert(
       users.map((user) => {
         return {
@@ -130,7 +136,7 @@ export default class SqlEventRepository implements EventRepository {
     return true;
   }
   async updateById(id: string, e: Omit<EventModel, "id">): Promise<EventModel> {
-    await this.knex("events").update(e);
+    await this.knex("events").where("id", "=", id).update(e);
     return await this.getById(id);
   }
 }

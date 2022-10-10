@@ -1,12 +1,11 @@
 {
   "port":8055,
   "knex": {
-    "client": "postgresql",
+    "client": "sqlite3",
     "connection": {
-      "database": "postgres",
-      "user":     "postgres",
-      "password": "1234"
-    }
+      "filename": "./sqlRepositories/databases/dev.sqlite3"
+    },
+    "useNullAsDefault": true
   },
   "mongodb": {
     "url": "mongodb://mongoadmin:secret@localhost:27017/",

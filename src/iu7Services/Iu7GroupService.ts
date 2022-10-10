@@ -37,13 +37,19 @@ export default class Iu7GroupService implements GroupService {
     });
   }
   async getVisits(group: string, date: Date): Promise<EventModel[]> {
-    const dateStr = date.toUTCString().split("T")[0];
+    const dateStr = date.toISOString().split("T")[0];
     return await this.eventRepository.getByFilterWithVisits({
       group,
       date: {
         gt: new Date(`${dateStr}T00:00:00`),
         lt: new Date(`${dateStr}T23:59:59`),
       },
+    });
+  }
+  
+  async getAllVisits(group: string): Promise<EventModel[]> {
+    return await this.eventRepository.getByFilterWithVisits({
+      group
     });
   }
   async getStudents(group: string): Promise<UserModel[]> {

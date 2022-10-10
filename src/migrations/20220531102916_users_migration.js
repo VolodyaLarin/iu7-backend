@@ -11,7 +11,8 @@ exports.up = function(knex) {
         t.string('login', 100);
         t.string('contingentLogin', 100);
         t.string('photo', 255);
-      })
+        t.enum('role', ['user', 'admin', 'leader']).defaultTo('user');
+    });
 };
 
 /**

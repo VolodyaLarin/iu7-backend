@@ -12,13 +12,13 @@ export class SqlUserRepository implements UserRepository {
 
   protected _mapUser(row): UserModel {
     if (!row) return null;
-
     const user: UserModel = {
       id: row.id,
       token: row.token,
       login: row.login,
       contingentLogin: row.contingentLogin,
       photo: row.photo,
+      role: row.role,
       contingent: row?.group
         ? {
             login: row.contingentLogin,
@@ -45,7 +45,8 @@ export class SqlUserRepository implements UserRepository {
   async getByLogin(login: string): Promise<UserModel> {
     const res = await this.knex("users")
       .where("login", "=", login)
-      .select("*")
+      .join("contingent", "contingent.login", "users.contingentLogin")
+      .select("contingent.*", "users.*")
       .first();
 
     return this._mapUser(res);
@@ -53,7 +54,8 @@ export class SqlUserRepository implements UserRepository {
   async getByToken(token: string): Promise<UserModel> {
     const res = await this.knex("users")
       .where("token", "=", token)
-      .select("*")
+      .join("contingent", "contingent.login", "users.contingentLogin")
+      .select("contingent.*", "users.*")
       .first();
 
     return this._mapUser(res);
@@ -78,8 +80,8 @@ export class SqlUserRepository implements UserRepository {
   }
 
   async create(user: Omit<UserModel, "id">): Promise<UserModel> {
-    const uid = await this.knex("users").insert([user], ["*"]);
+    const uid = await this.knex("users").insert([user], '*')[0];
 
-    return this._mapUser(uid[0]);
+    return this._mapUser(uid);
   }
 }

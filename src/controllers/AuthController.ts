@@ -11,6 +11,7 @@ import express from "express";
 import CasService from "../services/CasService";
 import { inject } from "inversify";
 import AuthService from "../services/AuthService";
+import GroupService from "../services/GroupService";
 
 @ApiPath({
   path: "/cas",
@@ -20,7 +21,8 @@ import AuthService from "../services/AuthService";
 export class AuthController implements interfaces.Controller {
   constructor(
     @inject("CasService") private cas: CasService,
-    @inject("AuthService") private auth: AuthService
+    @inject("AuthService") private auth: AuthService,
+    @inject("GroupService") private gs: GroupService
   ) {}
   @ApiOperationGet({
     description: "Переход к системе Cas",
@@ -61,17 +63,20 @@ export class AuthController implements interfaces.Controller {
     if (!token) {
       res.status(403);
       res.send(`Неверный тикет`);
+      return;
     }
 
-    return res.send(`${token}`);
+    return res.redirect("http://localhost:8080/savetoken?api_token=" + token);
+    return res.send(`<script>
+    ${token}
+    </script>`);
   }
 
   @ApiOperationGet({
     path: "/me",
     description: "Текущий пользователь",
     parameters: {
-      query: {
-      },
+      query: {},
     },
     responses: {
       200: { description: "" },
@@ -84,6 +89,19 @@ export class AuthController implements interfaces.Controller {
     @response() res: express.Response,
     @next() next: express.NextFunction
   ) {
-    return res.send(res.locals.user);
+    if (res.locals.user?.contingent?.group) {
+      const x = await this.gs.getStudents(res.locals.user.contingent.group);
+
+      return res.send(
+        Object.assign(
+          {},
+          res.locals.user,
+          x.find((xx) => xx.id == res.locals.user.id)
+        )
+      );
+    }
+
+    return res.send(res.locals.user)
+   
   }
 }

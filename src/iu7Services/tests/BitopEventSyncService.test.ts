@@ -6,7 +6,7 @@ describe("Event Sync Service", () => {
   const service = new BitopEventSyncService();
 
   it("load schedule", async () => {
-    await service.getTimetable("ИУ7-64Б");
+    await service.getTimetable("ИУ7-74Б");
   });
   it("select day", async () => {
     service.getTimetable = async () => {

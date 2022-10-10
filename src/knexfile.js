@@ -1,15 +1,21 @@
 /* eslint-disable no-undef */
 // Update with your config settings.
 
+
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 module.exports = {
 
   development: {
-    client: 'better-sqlite3',
-    connection: {
-      filename: './sqlRepositories/databases/dev.sqlite3'
+    "client": require('knex-firebird-dialect').default,
+    "connection": {
+      "host": "127.0.0.1",
+      "port": 3050,
+      "user": "SYSDBA",
+      "password": "somepassword",
+      "database": "/db/test_x.fdb",
+      "lowercase_keys": true,
     }
   },
 
