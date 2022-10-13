@@ -12,6 +12,15 @@
   - [USE-CASE - диаграмма](#use-case---диаграмма)
   - [Экраны будущего приложения](#экраны-будущего-приложения)
   - [ER-диаграмма](#er-диаграмма)
+- [API](#api)
+  - [Пользователь](#пользователь)
+  - [Задачи](#задачи)
+  - [Группы](#группы)
+  - [Произвольные поля](#произвольные-поля)
+  - [Событие](#событие)
+  - [Посещение](#посещение)
+  - [Студенты](#студенты)
+  - [Статистика](#статистика)
 
 <!-- vscode-markdown-toc-config
 	numbering=false
@@ -134,3 +143,47 @@ entity Мероприятие {
 
 @enduml
 ```
+
+# API
+
+Группа одна у пользователя
+
+## Пользователь
+GET /auth/
+GET /auth/cas
+GET /auth/user
+
+## Задачи 
+POST /rpc/syncTimetable -- синхронизировать расписание
+
+## Группы
+GET /groups
+GET /groups/{groupId}
+
+## Произвольные поля
+GET /groups/{groupId}/fields
+PUT /groups/{groupId}/fields
+
+
+## Событие
+GET /groups/{groupId}/events
+POST /groups/{groupId}/events
+GET /groups/{groupId}/events/{eventId}
+PUT /groups/{groupId}/events/{eventId}
+
+## Посещение
+PUT  /groups/{groupId}/events/{eventId}/visits -- полное изменение 
+PATCH /groups/{groupId}/events/{eventId}/visits -- посетить текущим пользователем
+
+## Студенты
+GET /groups/{groupId}/users
+PATCH /groups/{groupId}/users/{userId}/student_card -- обновить
+
+## Статистика
+GET /groups/{groupId}/statistics
+GET /groups/{groupId}/users/{userId}/statistics
+
+
+
+---------------
+

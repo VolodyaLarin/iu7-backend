@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+  backend1: &backend1
+    build: ./src
+    # ports:
+      # - "5001:8055"
+    volumes:
+      - ./config/backend:/usr/src/app/config
+    links:
+      - "postgres:postgres"
+      - "mongo:mongo"
+    depends_on:
+      - mongo
+      - postgres
+  backend2:
+    <<: *backend1
+  backend3:
+    <<: *backend1
+  mongo:
+    image: "mongo"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+  postgres:
+    restart: always
+    image: "postgres:alpine"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: 1234
+      PGDATA: /var/lib/postgresql/data/pgdata2
+    volumes:
+      - /tmp/pgdata:/var/lib/postgresql/data
+    cpu_count: 4
+    mem_limit: 6g
+  nginx:
+    image: 'nginx'
+    ports:
+      - "9090:9090"
+    links:
+      - "backend1:backend1"
+      - "backend2:backend2"
+      - "backend3:backend3"
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./static:/usr/share/nginx/static
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
