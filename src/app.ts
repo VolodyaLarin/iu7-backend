@@ -10,11 +10,11 @@ import {
   TYPE,
 } from "inversify-express-utils";
 
-import "./controllers/AuthController";
-import "./controllers/EventController";
-import "./controllers/GroupController";
-import "./controllers/StudentController";
-import "./controllers/StatsController";
+import "./controllers_v1/AuthController";
+import "./controllers_v1/EventController";
+import "./controllers_v1/GroupController";
+import "./controllers_v1/StudentController";
+import "./controllers_v1/StatsController";
 import express from "express";
 
 import * as swagger from "swagger-express-ts";
@@ -36,8 +36,8 @@ import SqlEventRepository from "./sqlRepositories/SqlEventRepository";
 import EventService from "./services/EventService";
 import Iu7EventService from "./iu7Services/Iu7EventService";
 import FastXmlParser from "./iu7Services/FastXmlParser";
-import { AuthMiddleware } from "./controllers/AuthMiddleware";
-import { ContingentMiddleware } from "./controllers/ContingentMiddleware";
+import { AuthMiddleware } from "./controllers_v1/AuthMiddleware";
+import { ContingentMiddleware } from "./controllers_v1/ContingentMiddleware";
 import GroupService from "./services/GroupService";
 import Iu7GroupService from "./iu7Services/Iu7GroupService";
 import StudentRepository from "./repositories/student";
@@ -106,7 +106,7 @@ const haltOnTimedout = (req, res, next) => {
   // create server
   const server = new InversifyExpressServer(container);
   server.setConfig((app) => {
-    // app.use(timeout('2s'))
+    app.use(timeout('2s'))
     app.use(morgan('combined'))
     app.use("/api-docs/swagger", express.static("swagger"));
     app.use(

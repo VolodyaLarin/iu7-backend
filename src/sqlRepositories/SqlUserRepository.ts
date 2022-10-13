@@ -44,7 +44,7 @@ export class SqlUserRepository implements UserRepository {
   }
   async getByLogin(login: string): Promise<UserModel> {
     const res = await this.knex("users")
-      .where("login", "=", login)
+      .where("users.contingentLogin", "=", login)
       .join("contingent", "contingent.login", "users.contingentLogin")
       .select("contingent.*", "users.*")
       .first();

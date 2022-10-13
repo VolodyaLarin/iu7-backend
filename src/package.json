@@ -45,7 +45,6 @@
     "inversify": "^6.0.1",
     "inversify-express-utils": "^6.4.3",
     "knex": "^2.1.0",
-    "knex-firebird": "^0.1.14",
     "knex-firebird-dialect": "^1.4.0",
     "lodash": "^4.17.21",
     "mongodb": "^4.6.0",
