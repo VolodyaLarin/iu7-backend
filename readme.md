@@ -54,7 +54,7 @@
 
 ## USE-CASE - диаграмма
 
-```plantuml
+<!-- ```plantuml -->
 @startuml usecase
 
 left to right direction
@@ -92,7 +92,7 @@ left to right direction
 ' :Администратор: --> :Студент:
 
 @enduml
-```
+<!-- ``` -->
 
 ## Экраны будущего приложения
 
@@ -100,7 +100,7 @@ left to right direction
 
 
 ## ER-диаграмма
-```plantuml
+<!-- ```plantuml -->
 @startuml
 
 left to right direction
@@ -142,7 +142,7 @@ entity Мероприятие {
 Мероприятие }o--o{ Пользователь : посещает
 
 @enduml
-```
+<!-- ``` -->
 
 # API
 

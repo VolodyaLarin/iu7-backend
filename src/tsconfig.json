@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node12/tsconfig.json",
     "compilerOptions": {
       "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
       "target": "es6",
       "module": "commonjs",
       "outDir": "./build",
@@ -10,7 +11,7 @@
       "noImplicitAny": false,
 
     },
-    "include": ["app.ts"],
+    "include": ["app.ts", "app_v2.ts"],
     "exclude": ["node_modules", "**/*.spec.ts"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

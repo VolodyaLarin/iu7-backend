@@ -26,7 +26,7 @@ export default class Iu7EventService implements EventService {
   }
 
   async filter(filter: EventFilterModel): Promise<EventModel[]> {
-    return await this.repo.getByFilter(filter);
+    return await this.repo.getByFilterWithVisits(filter);
   }
   async syncVisits(eventId: string, userIds: string[]): Promise<void> {
     await this.repo.syncVisits(eventId, userIds);

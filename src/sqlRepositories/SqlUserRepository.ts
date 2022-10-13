@@ -44,11 +44,11 @@ export class SqlUserRepository implements UserRepository {
   }
   async getByLogin(login: string): Promise<UserModel> {
     const res = await this.knex("users")
-      .where("users.contingentLogin", "=", login)
-      .join("contingent", "contingent.login", "users.contingentLogin")
+      .leftJoin("contingent", "contingent.login", "users.contingentLogin")
       .select("contingent.*", "users.*")
+      .where("users.login", "=", login)
       .first();
-
+    
     return this._mapUser(res);
   }
   async getByToken(token: string): Promise<UserModel> {
@@ -80,7 +80,8 @@ export class SqlUserRepository implements UserRepository {
   }
 
   async create(user: Omit<UserModel, "id">): Promise<UserModel> {
-    const uid = await this.knex("users").insert([user], '*')[0];
+    console.log(user)
+    const uid = (await this.knex("users").insert([user], '*'))[0];
 
     return this._mapUser(uid);
   }

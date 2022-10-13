@@ -38,7 +38,7 @@ export default class Iu7AuthService implements AuthService {
 
     const contingentLogin = reverseTransliterate(
       login.substring(login.search(/[0-9]/))
-    );
+    ).toUpperCase();
     
     if (!user) {
       user = await this.repo.create({

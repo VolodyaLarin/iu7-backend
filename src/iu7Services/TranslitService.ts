@@ -138,4 +138,5 @@ function transliterate(word, l) {
 
 export default (word) => transliterate(word, letters);
 
-export const reverseTransliterate = (word) => transliterate(word, lettersFrom);
+export const reverseTransliterate: (w: string) => string = (word) =>
+  transliterate(word, lettersFrom);
