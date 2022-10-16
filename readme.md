@@ -12,15 +12,7 @@
   - [USE-CASE - диаграмма](#use-case---диаграмма)
   - [Экраны будущего приложения](#экраны-будущего-приложения)
   - [ER-диаграмма](#er-диаграмма)
-- [API](#api)
-  - [Пользователь](#пользователь)
-  - [Задачи](#задачи)
-  - [Группы](#группы)
-  - [Произвольные поля](#произвольные-поля)
-  - [Событие](#событие)
-  - [Посещение](#посещение)
-  - [Студенты](#студенты)
-  - [Статистика](#статистика)
+  - [Нагрузочное тестирование (или знакомство с ApacheBenchmark)](#нагрузочное-тестирование-или-знакомство-с-apachebenchmark)
 
 <!-- vscode-markdown-toc-config
 	numbering=false
@@ -144,46 +136,64 @@ entity Мероприятие {
 @enduml
 <!-- ``` -->
 
-# API
 
-Группа одна у пользователя
+## Нагрузочное тестирование (или знакомство с ApacheBenchmark)
 
-## Пользователь
-GET /auth/
-GET /auth/cas
-GET /auth/user
+```
+ab -n 100000 -c 500 http://localhost:9090/api/v2/auth/user
+This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
 
-## Задачи 
-POST /rpc/syncTimetable -- синхронизировать расписание
-
-## Группы
-GET /groups
-GET /groups/{groupId}
-
-## Произвольные поля
-GET /groups/{groupId}/fields
-PUT /groups/{groupId}/fields
-
-
-## Событие
-GET /groups/{groupId}/events
-POST /groups/{groupId}/events
-GET /groups/{groupId}/events/{eventId}
-PUT /groups/{groupId}/events/{eventId}
-
-## Посещение
-PUT  /groups/{groupId}/events/{eventId}/visits -- полное изменение 
-PATCH /groups/{groupId}/events/{eventId}/visits -- посетить текущим пользователем
-
-## Студенты
-GET /groups/{groupId}/users
-PATCH /groups/{groupId}/users/{userId}/student_card -- обновить
-
-## Статистика
-GET /groups/{groupId}/statistics
-GET /groups/{groupId}/users/{userId}/statistics
+Benchmarking localhost (be patient)
+Completed 10000 requests
+Completed 20000 requests
+Completed 30000 requests
+Completed 40000 requests
+Completed 50000 requests
+Completed 60000 requests
+Completed 70000 requests
+Completed 80000 requests
+Completed 90000 requests
+Completed 100000 requests
+Finished 100000 requests
 
 
+Server Software:        IU7RF
+Server Hostname:        localhost
+Server Port:            9090
 
----------------
+Document Path:          /api/v2/auth/user
+Document Length:        146 bytes
 
+Concurrency Level:      500
+Time taken for tests:   103.832 seconds
+Complete requests:      100000
+Failed requests:        12085
+   (Connect: 0, Receive: 0, Length: 12085, Exceptions: 0)
+Non-2xx responses:      87915
+Total transferred:      44221245 bytes
+HTML transferred:       12835590 bytes
+Requests per second:    963.10 [#/sec] (mean)
+Time per request:       519.158 [ms] (mean)
+Time per request:       1.038 [ms] (mean, across all concurrent requests)
+Transfer rate:          415.91 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   1.2      0      22
+Processing:     0  518 466.1    364    1401
+Waiting:        0  518 466.2    364    1401
+Total:          0  519 466.1    364    1414
+
+Percentage of the requests served within a certain time (ms)
+  50%    364
+  66%    764
+  75%   1071
+  80%   1093
+  90%   1157
+  95%   1211
+  98%   1238
+  99%   1246
+ 100%   1414 (longest request)
+```
