@@ -2,10 +2,8 @@ version: "3.9"
 services:
   backend1: &backend1
     build: ./src
-    # ports:
-      # - "5001:8055"
     volumes:
-      - ./config/backend:/usr/src/app/config
+      - ./config/backend/default.json:/usr/src/app/config/default.json
     links:
       - "postgres:postgres"
       - "mongo:mongo"
@@ -18,6 +16,11 @@ services:
     <<: *backend1
   miror:
     <<: *backend1
+  backend_legacy:
+    <<: *backend1
+    entrypoint: ["node", "app.js"]
+    volumes:
+      - ./config/backend/default_legacy.json:/usr/src/app/config/default.json
   mongo:
     image: "mongo"
     environment:

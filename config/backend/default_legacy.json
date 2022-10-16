@@ -9,12 +9,15 @@
       "host": "postgres"
     }
   },
+  "auth": {
+    "redirect": "/legacy/"
+  },
   "mongodb": {
     "url": "mongodb://mongoadmin:secret@mongo:27017/",
     "database": "db"
   },
   "cas": {
-    "redirectUrl": "http://localhost:9090/api/v2/auth/cas_callback",
+    "redirectUrl": "http://localhost:9090/api/v1/cas/auth/",
     "casUrl": "https://proxy.bmstu.ru:8443"
   },
   "bitop": {
