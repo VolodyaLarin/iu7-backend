@@ -19,6 +19,7 @@ import "./controllers_v2/EventController";
 import "./controllers_v2/GroupController";
 import "./controllers_v2/StudentController";
 import "./controllers_v2/StatsController";
+
 import { ContingentMiddleware } from "./controllers_v2/ContingentMiddleware";
 import { AuthMiddleware } from "./controllers_v2/AuthMiddleware";
 
@@ -132,10 +133,10 @@ const main = async () => {
     app.use(haltOnTimedout);
     app.use(
       swagger.express({
-        path:'/api/v2/swagger.json',
+        path: '/api/v2/swagger.json',
         definition: {
           info: {
-            title: "My api",
+            title: "IU7RF api",
             version: "2.0",
           },
           securityDefinitions: {

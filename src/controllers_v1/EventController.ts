@@ -26,11 +26,11 @@ import EventService, { EventFilterModel } from "../services/EventService";
 import { SchemeFilter } from "./schemes/SchemeFilter";
 
 @ApiPath({
-  path: "/event",
+  path: "/api/v1/event",
   name: "Мероприятия",
   security: { apiKeyHeader: [] },
 })
-@controller("/event", "AuthMiddleware")
+@controller("/api/v1/event", "AuthMiddleware")
 export class EventController implements interfaces.Controller {
   schema = {
     type: "object",

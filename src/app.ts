@@ -4,11 +4,7 @@ import * as bodyParser from "body-parser";
 import morgan from 'morgan';
 
 import { Container } from "inversify";
-import {
-  interfaces,
-  InversifyExpressServer,
-  TYPE,
-} from "inversify-express-utils";
+import { InversifyExpressServer } from "inversify-express-utils";
 
 import "./controllers_v1/AuthController";
 import "./controllers_v1/EventController";
@@ -99,20 +95,18 @@ const main = async () => {
   }
 
 
-const haltOnTimedout = (req, res, next) => {
-  if (!req.timedout) next()
-}
+  const haltOnTimedout = (req, res, next) => {
+    if (!req.timedout) next()
+  }
 
   // create server
   const server = new InversifyExpressServer(container);
   server.setConfig((app) => {
     // app.use(timeout('2s'))
     app.use(morgan('combined'))
-    app.use("/api-docs/swagger", express.static("swagger"));
-    app.use(
-      "/api-docs/swagger/assets",
-      express.static("node_modules/swagger-ui-dist")
-    );
+    app.use("/api/v2/", express.static("swagger"));
+    app.use("/api/v2/assets", express.static("node_modules/swagger-ui-dist"));
+
     // app.use(haltOnTimedout)
     app.use((req, res, next) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -136,9 +130,10 @@ const haltOnTimedout = (req, res, next) => {
 
     app.use(
       swagger.express({
+        path: '/api/v2/swagger.json',
         definition: {
           info: {
-            title: "My api",
+            title: "IU7RF api",
             version: "1.0",
           },
           securityDefinitions: {

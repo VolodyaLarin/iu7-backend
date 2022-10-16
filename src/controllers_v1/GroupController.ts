@@ -24,11 +24,11 @@ import EventService, { EventFilterModel } from "../services/EventService";
 import GroupService from "../services/GroupService";
 
 @ApiPath({
-  path: "/group",
+  path: "/api/v1/group",
   name: "Группа",
   security: { apiKeyHeader: [] },
 })
-@controller("/group", "AuthMiddleware", "ContingentMiddleware")
+@controller("/api/v1/group", "AuthMiddleware", "ContingentMiddleware")
 export class GroupController implements interfaces.Controller {
   constructor(@inject("GroupService") private gs: GroupService) {}
 

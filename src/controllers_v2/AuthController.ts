@@ -17,10 +17,10 @@ import "./models/UserModel"
 import { C2UserModel } from "./models/UserModel";
 
 @ApiPath({
-  path: "/auth",
+  path: "/api/v2/auth",
   name: "Авторизация",
 })
-@controller("/auth")
+@controller("/api/v2/auth")
 export class AuthController implements interfaces.Controller {
   constructor(
     @inject("CasService") private cas: CasService,
@@ -33,7 +33,7 @@ export class AuthController implements interfaces.Controller {
       302: { description: "Редирект" },
     },
   })
-  @httpGet("/")
+  @httpGet("/api/v2/")
   async index(
     @request() req: express.Request,
     @response() res: express.Response
@@ -42,7 +42,7 @@ export class AuthController implements interfaces.Controller {
   }
 
   @ApiOperationGet({
-    path: "/cas_callback",
+    path: "/api/v2/cas_callback",
     description: "Проверка токена",
     parameters: {
       query: {
@@ -53,7 +53,7 @@ export class AuthController implements interfaces.Controller {
       302: { description: "Редирект на SPA" },
     },
   })
-  @httpGet("/cas_callback")
+  @httpGet("/api/v2/cas_callback")
   async token_check(
     @request() req: express.Request,
     @response() res: express.Response,

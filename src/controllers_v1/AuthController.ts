@@ -14,10 +14,10 @@ import AuthService from "../services/AuthService";
 import GroupService from "../services/GroupService";
 
 @ApiPath({
-  path: "/cas",
+  path: "/api/v1/cas",
   name: "Авторизация",
 })
-@controller("/cas")
+@controller("/api/v1/cas")
 export class AuthController implements interfaces.Controller {
   constructor(
     @inject("CasService") private cas: CasService,

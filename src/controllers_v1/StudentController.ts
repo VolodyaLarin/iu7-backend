@@ -26,11 +26,11 @@ import EventService, { EventFilterModel } from "../services/EventService";
 import StudentService, { FieldModel, StudentModel } from "../services/StudentService";
 
 @ApiPath({
-  path: "/students",
+  path: "/api/v1/students",
   name: "Студенты",
   security: { apiKeyHeader: [] },
 })
-@controller("/students", "AuthMiddleware")
+@controller("/api/v1/students", "AuthMiddleware")
 export class StudentController implements interfaces.Controller {
   schema = {
     type: "object",
