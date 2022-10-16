@@ -11,7 +11,6 @@ import {
   httpPost,
   httpPut,
   interfaces,
-  next,
   request,
   requestParam,
   response,
@@ -77,7 +76,6 @@ export class GroupController implements interfaces.Controller {
     @requestParam("date") date: string,
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     const group = res.locals.user.contingent.group;
     const d = new Date(date);
@@ -107,7 +105,6 @@ export class GroupController implements interfaces.Controller {
   private async getMeta(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     const group = res.locals.user.contingent.group;
     const events = await this.gs.getMeta(group);
@@ -128,7 +125,6 @@ export class GroupController implements interfaces.Controller {
   private async getFields(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     const group = res.locals.user.contingent.group;
     const fields = await this.gs.getStudentFields(group);
@@ -156,7 +152,6 @@ export class GroupController implements interfaces.Controller {
   private async putFieldsMyGroup(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     if (!this.validateFields(req.body)) {
       res.send({

@@ -3,7 +3,6 @@ import {
   controller,
   httpGet,
   interfaces,
-  next,
   request,
   response,
 } from "inversify-express-utils";
@@ -59,7 +58,6 @@ export class AuthController implements interfaces.Controller {
   async token_check(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ) {
     const ticket = String(req.query.ticket);
 
@@ -91,7 +89,6 @@ export class AuthController implements interfaces.Controller {
   async me(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ) {
 
     let user:C2UserModel | null = null 

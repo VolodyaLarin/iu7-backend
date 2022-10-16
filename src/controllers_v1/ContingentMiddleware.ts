@@ -1,7 +1,6 @@
 import { inject, injectable } from "inversify";
 import { BaseMiddleware } from "inversify-express-utils";
 import express from "express";
-import AuthService, { UserModel } from "../services/AuthService";
 import ContingentRepository from "../repositories/contingent";
 
 

@@ -12,7 +12,6 @@ import {
   httpGet,
   httpPatch,
   interfaces,
-  next,
   request,
   requestParam,
   response,
@@ -78,7 +77,7 @@ export class StudentController implements interfaces.Controller {
         id: {},
       },
       body: {
-        type: "json",
+        type: SwaggerDefinitionConstant.OBJECT,
         description: 'Произвольные поля типа строка'
       },
     },
@@ -96,7 +95,6 @@ export class StudentController implements interfaces.Controller {
     @requestParam("id") id: string,
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     if (!this.validate(req.body)) {
       res.status(400);
@@ -106,7 +104,7 @@ export class StudentController implements interfaces.Controller {
       return;
     }
     const student: StudentModel = req.body;
-    const updated = await this.ss.updateStudent(id, student);
+    await this.ss.updateStudent(id, student);
     res.json({status: 'ok'});
   }
 }

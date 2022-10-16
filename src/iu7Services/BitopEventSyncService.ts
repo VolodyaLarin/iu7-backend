@@ -55,6 +55,11 @@ export default class BitopEventSyncService implements EventSyncService {
   }
 
   async getEvents(group: string, date: Date): Promise<EventModel[]> {
+    // Fix TimeZone
+    const fixedDate = new Date(date)
+    fixedDate.setMinutes(0)
+    fixedDate.setHours(-3)
+
     const sh = await this.getTimetable(group);
     const weekN =
       (date.getTime() - sh.firstDayOfSemester.getTime()) /
@@ -66,7 +71,7 @@ export default class BitopEventSyncService implements EventSyncService {
 
     return sh[weekT][dayN].map((x) => {
       const dateTime = new Date(
-        date.getTime() + (x.startAt[0] * 60 + x.startAt[1]) * 60 * 1000
+        fixedDate.getTime() + (x.startAt[0] * 60 + x.startAt[1]) * 60 * 1000
       );
       return {
         date: dateTime,

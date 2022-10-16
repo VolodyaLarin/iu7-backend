@@ -4,7 +4,6 @@ const ajv = new Ajv();
 import {
   ApiOperationDelete,
   ApiOperationGet,
-  ApiOperationPatch,
   ApiOperationPost,
   ApiOperationPut,
   ApiPath,
@@ -18,14 +17,13 @@ import {
   httpPost,
   httpPut,
   interfaces,
-  next,
   request,
   requestParam,
   response,
 } from "inversify-express-utils";
 import express from "express";
 import { inject } from "inversify";
-import EventService, { EventFilterModel } from "../services/EventService";
+import EventService from "../services/EventService";
 import { SchemeFilter } from "./schemes/SchemeFilter";
 
 import "./models/EventModel";
@@ -88,7 +86,6 @@ export class EventController implements interfaces.Controller {
   private async filterEvent(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     const group = res.locals.user?.contingent?.group;
 
@@ -125,7 +122,6 @@ export class EventController implements interfaces.Controller {
   private async getEvent(
     @requestParam("id") id: string,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     const event = await this.es.get(id);
     if (!event.id) {
@@ -158,7 +154,6 @@ export class EventController implements interfaces.Controller {
     @requestParam("id") id: string,
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     if (!this.validate(req.body)) {
       res.status(400).send({
@@ -196,7 +191,6 @@ export class EventController implements interfaces.Controller {
   private async createEvent(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     if (!this.validate(req.body)) {
       res.send({
@@ -230,7 +224,6 @@ export class EventController implements interfaces.Controller {
     @requestParam("id") id: string,
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     await this.es.delete(id);
     res.json({
@@ -246,7 +239,6 @@ export class EventController implements interfaces.Controller {
       },
       body: {
         type: SwaggerDefinitionConstant.ARRAY,
-        // @ts-ignore
         model: SwaggerDefinitionConstant.STRING
       },
     },
@@ -263,7 +255,6 @@ export class EventController implements interfaces.Controller {
     @requestParam("id") id: string,
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     if (!Array.isArray(req.body)) {
       res.status(400).send({
@@ -273,8 +264,8 @@ export class EventController implements interfaces.Controller {
     }
     const visits = [...new Set(req.body
       .map((x) => parseInt(x))
-      .filter((x) => !x).map((x) => String(x)))]
-    
+      .filter((x) => !!x).map((x) => String(x)))]
+
     const event = await this.es.get(id);
     if (!event.id) {
       res.status(404).json({ errors: ['not found'] })
@@ -304,14 +295,13 @@ export class EventController implements interfaces.Controller {
     @requestParam("id") id: string,
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     const event = await this.es.get(id);
     if (!event.id) {
       res.status(404).json({ errors: ['not found'] })
       return;
     }
-    
+
     await this.es.addVisit(id, res.locals?.user?.id);
     res.json({ status: "ok" });
   }

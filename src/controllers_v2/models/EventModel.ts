@@ -1,7 +1,6 @@
 import "reflect-metadata";
 
 import { ApiModel, ApiModelProperty, SwaggerDefinitionConstant } from "swagger-express-ts";
-import { C2UserModel } from "./UserModel";
 
 @ApiModel({
   description: "Visit",
@@ -27,13 +26,6 @@ export class C2VisitModel {
     example: "123456789",
   })
   eventId: string;
-
-  // @ApiModelProperty({
-  //   description: "user",
-  //   required: false,
-  //   model: "C2UserModel"
-  // })
-  // user?: C2UserModel;
 }
 
 @ApiModel({
@@ -179,7 +171,7 @@ export class C2PostEventModel {
   description: "Event",
   name: "C2PatchVisitModel",
 })
-class C2PatchVisitModel {
+export class C2PatchVisitModel {
   @ApiModelProperty({
     description: "Id пользователя",
     required: true,

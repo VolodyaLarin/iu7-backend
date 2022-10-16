@@ -1,26 +1,20 @@
 import {
-  ApiOperationDelete,
   ApiOperationGet,
   ApiOperationPost,
-  ApiOperationPut,
   ApiPath,
 } from "swagger-express-ts";
 import {
   controller,
-  httpDelete,
   httpGet,
   httpPost,
-  httpPut,
   interfaces,
   next,
-  params,
   request,
   requestParam,
   response,
 } from "inversify-express-utils";
 import express from "express";
 import { inject } from "inversify";
-import EventService, { EventFilterModel } from "../services/EventService";
 import GroupService from "../services/GroupService";
 
 @ApiPath({

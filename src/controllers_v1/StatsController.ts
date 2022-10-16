@@ -2,18 +2,12 @@ import Ajv from "ajv";
 const ajv = new Ajv();
 
 import {
-  ApiOperationDelete,
   ApiOperationGet,
-  ApiOperationPost,
-  ApiOperationPut,
   ApiPath,
 } from "swagger-express-ts";
 import {
   controller,
-  httpDelete,
   httpGet,
-  httpPost,
-  httpPut,
   interfaces,
   next,
   request,
@@ -22,11 +16,7 @@ import {
 } from "inversify-express-utils";
 import express from "express";
 import { inject } from "inversify";
-import EventService, { EventFilterModel } from "../services/EventService";
-import StudentService, {
-  FieldModel,
-  StudentModel,
-} from "../services/StudentService";
+import { EventFilterModel } from "../services/EventService";
 import StatsService from "../services/StatsService";
 import { SchemeFilter } from "./schemes/SchemeFilter";
 

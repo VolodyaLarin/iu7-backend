@@ -7,7 +7,7 @@
     "build": "tsc --outDir dist --project tsconfig.json",
     "test": "jest",
     "coverage": "jest --coverage",
-    "lint": "eslint iu7Services repositories services sqlRepositories"
+    "lint": "eslint iu7Services repositories services sqlRepositories controllers_v1 controllers_v2"
   },
   "author": "",
   "license": "ISC",
