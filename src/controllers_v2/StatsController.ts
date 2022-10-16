@@ -31,11 +31,11 @@ import StatsService from "../services/StatsService";
 import { SchemeFilter } from "./schemes/SchemeFilter";
 
 @ApiPath({
-  path: "/rpc",
+  path: "/api/v2/rpc",
   name: "Статистика",
   security: { apiKeyHeader: [] },
 })
-@controller("/rpc", "AuthMiddleware")
+@controller("/api/v2/rpc", "AuthMiddleware")
 export class StatsController implements interfaces.Controller {
   validate: Ajv.ValidateFunction;
 

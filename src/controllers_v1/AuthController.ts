@@ -7,6 +7,7 @@ import {
   request,
   response,
 } from "inversify-express-utils";
+import config from "config";
 import express from "express";
 import CasService from "../services/CasService";
 import { inject } from "inversify";
@@ -66,9 +67,9 @@ export class AuthController implements interfaces.Controller {
       return;
     }
 
-    return res.redirect("http://localhost:8080/savetoken?api_token=" + token);
     return res.send(`<script>
-    ${token}
+      localStorage.setItem('api_token', "${token}")
+      location.href = "${config.get('auth.redirect') || '/'}"
     </script>`);
   }
 

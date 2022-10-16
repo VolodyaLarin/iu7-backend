@@ -35,11 +35,11 @@ import "./models/ValidateErrorModel";
 import { C2ValidateErrors } from "./models/ValidateErrorModel";
 
 @ApiPath({
-  path: "/events",
+  path: "/api/v2/events",
   name: "Мероприятия",
   security: { apiKeyHeader: [] },
 })
-@controller("/events", "AuthMiddleware")
+@controller("/api/v2/events", "AuthMiddleware")
 export class EventController implements interfaces.Controller {
   schema = {
     type: "object",

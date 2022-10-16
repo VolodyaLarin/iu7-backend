@@ -30,11 +30,11 @@ import StudentService, {
 import GroupService from "../services/GroupService";
 
 @ApiPath({
-  path: "/students",
+  path: "/api/v2/students",
   name: "Студенты",
   security: { apiKeyHeader: [] },
 })
-@controller("/students", "AuthMiddleware")
+@controller("/api/v2/students", "AuthMiddleware")
 export class StudentController implements interfaces.Controller {
   schema = {
     type: "object",

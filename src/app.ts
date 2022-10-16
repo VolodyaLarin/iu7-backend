@@ -104,8 +104,8 @@ const main = async () => {
   server.setConfig((app) => {
     // app.use(timeout('2s'))
     app.use(morgan('combined'))
-    app.use("/api/v2/", express.static("swagger"));
-    app.use("/api/v2/assets", express.static("node_modules/swagger-ui-dist"));
+    app.use("/api/v1/", express.static("swagger"));
+    app.use("/api/v1/assets", express.static("node_modules/swagger-ui-dist"));
 
     // app.use(haltOnTimedout)
     app.use((req, res, next) => {
@@ -130,7 +130,7 @@ const main = async () => {
 
     app.use(
       swagger.express({
-        path: '/api/v2/swagger.json',
+        path: '/api/v1/swagger.json',
         definition: {
           info: {
             title: "IU7RF api",

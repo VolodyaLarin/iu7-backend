@@ -28,11 +28,11 @@ import Ajv from "ajv";
 const ajv = new Ajv();
 
 @ApiPath({
-  path: "",
+  path: "/api/v2",
   name: "Группа",
   security: { apiKeyHeader: [] },
 })
-@controller("", "AuthMiddleware", "ContingentMiddleware")
+@controller("/api/v2", "AuthMiddleware", "ContingentMiddleware")
 export class GroupController implements interfaces.Controller {
 
   schemaFields = {
