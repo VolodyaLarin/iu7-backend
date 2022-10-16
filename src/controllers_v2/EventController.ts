@@ -29,10 +29,8 @@ import EventService, { EventFilterModel } from "../services/EventService";
 import { SchemeFilter } from "./schemes/SchemeFilter";
 
 import "./models/EventModel";
-import { C2EventModel } from "./models/EventModel";
-
 import "./models/ValidateErrorModel";
-import { C2ValidateErrors } from "./models/ValidateErrorModel";
+import "./models/ErrorModel";
 
 @ApiPath({
   path: "/api/v2/events",
@@ -83,7 +81,7 @@ export class EventController implements interfaces.Controller {
         model: "C2EventModel",
         type: SwaggerDefinitionConstant.ARRAY,
       },
-      401: { description: "Не авторизован" },
+      401: { description: "Не авторизован", model: "C2Error", },
     },
   })
   @httpGet("/")
@@ -98,9 +96,9 @@ export class EventController implements interfaces.Controller {
       date:
         req.query.date_gt && req.query.date_lt
           ? {
-              gt: new Date(String(req.query.date_gt)),
-              lt: new Date(String(req.query.date_lt)),
-            }
+            gt: new Date(String(req.query.date_gt)),
+            lt: new Date(String(req.query.date_lt)),
+          }
           : undefined,
       type: req.query.type ? String(req.query.type) : undefined,
       group,
@@ -118,9 +116,9 @@ export class EventController implements interfaces.Controller {
     description: "Получить событие",
     responses: {
       200: { description: "Объект события", model: "C2EventModel" },
-      404: { description: "Не найдено" },
-      403: { description: "Нет доступа" },
-      401: { description: "Не авторизован" },
+      404: { description: "Не найдено", model: "C2Error" },
+      403: { description: "Нет доступа", model: "C2Error" },
+      401: { description: "Не авторизован", model: "C2Error" },
     },
   })
   @httpGet("/:id")
@@ -130,6 +128,10 @@ export class EventController implements interfaces.Controller {
     @next() next: express.NextFunction
   ): Promise<void> {
     const event = await this.es.get(id);
+    if (!event.id) {
+      res.status(404).json({ errors: ['not found'] })
+      return;
+    }
     res.json(event);
   }
 
@@ -147,8 +149,8 @@ export class EventController implements interfaces.Controller {
     responses: {
       200: { description: "Объект события", model: "C2EventModel" },
       400: { description: "Ошибка валидации", model: "C2ValidateErrors" },
-      401: { description: "Не авторизован" },
-      404: { description: "Не найдено" },
+      401: { description: "Не авторизован", model: "C2Error" },
+      404: { description: "Не найдено", model: "C2Error" },
     },
   })
   @httpPut("/:id")
@@ -168,6 +170,11 @@ export class EventController implements interfaces.Controller {
     const event = await this.es.update(
       Object.assign({}, req.body, { id, date: new Date(req.body.date) })
     );
+    if (!event.id) {
+      res.status(404).json({ errors: ['not found'] })
+      return;
+    }
+
     res.json(event);
   }
 
@@ -180,9 +187,9 @@ export class EventController implements interfaces.Controller {
     },
     description: "Создать событие",
     responses: {
-      200: { description: "Объект события", model: "C2EventModel" },
+      201: { description: "Объект события", model: "C2EventModel" },
       400: { description: "Ошибка валидации", model: "C2ValidateErrors" },
-      401: { description: "Не авторизован" },
+      401: { description: "Не авторизован", model: "C2Error" },
     },
   })
   @httpPost("/")
@@ -201,7 +208,7 @@ export class EventController implements interfaces.Controller {
     const event = await this.es.create(
       Object.assign({}, req.body, { date: new Date(req.body.date) })
     );
-    res.json(event);
+    res.status(201).json(event);
   }
 
   @ApiOperationDelete({
@@ -213,7 +220,9 @@ export class EventController implements interfaces.Controller {
     },
     description: "Удалить событие",
     responses: {
-      200: { description: "Объект события" },
+      200: { description: "Удалено", model: 'C2StatusOk' },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
   @httpDelete("/:id")
@@ -224,7 +233,9 @@ export class EventController implements interfaces.Controller {
     @next() next: express.NextFunction
   ): Promise<void> {
     await this.es.delete(id);
-    res.json({});
+    res.json({
+      status: 'ok'
+    });
   }
 
   @ApiOperationPut({
@@ -235,15 +246,16 @@ export class EventController implements interfaces.Controller {
       },
       body: {
         type: SwaggerDefinitionConstant.ARRAY,
-        model: "C2PatchVisitModel",
+        // @ts-ignore
+        model: SwaggerDefinitionConstant.STRING
       },
     },
     description: "Синхронизировать посещения",
     responses: {
-      200: { description: "Объект события" },
+      200: { description: "Синхронизировано", model: 'C2StatusOk' },
       400: { description: "Ошибка валидации", model: "C2ValidateErrors" },
-      401: { description: "Не авторизован" },
-      404: { description: "Не найдено" },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      404: { description: "Не найдено", model: 'C2Error' },
     },
   })
   @httpPut("/:id/visits")
@@ -259,11 +271,21 @@ export class EventController implements interfaces.Controller {
       });
       return;
     }
-    await this.es.syncVisits(id, req.body);
+    const visits = [...new Set(req.body
+      .map((x) => parseInt(x))
+      .filter((x) => !x).map((x) => String(x)))]
+    
+    const event = await this.es.get(id);
+    if (!event.id) {
+      res.status(404).json({ errors: ['not found'] })
+      return;
+    }
+
+    await this.es.syncVisits(id, visits);
     res.json({ status: "ok" });
   }
 
-  @ApiOperationPatch({
+  @ApiOperationPost({
     path: "/{id}/visits",
     parameters: {
       path: {
@@ -272,9 +294,9 @@ export class EventController implements interfaces.Controller {
     },
     description: "Посетить мероприятие",
     responses: {
-      200: { description: "Добавлено" },
-      401: { description: "Не авторизован" },
-      404: { description: "Не найдено" },
+      201: { description: "Добавлено посещение", model: 'C2StatusOk' },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      404: { description: "Не найдено", model: 'C2Error' },
     },
   })
   @httpPatch("/:id/visits")
@@ -284,6 +306,12 @@ export class EventController implements interfaces.Controller {
     @response() res: express.Response,
     @next() next: express.NextFunction
   ): Promise<void> {
+    const event = await this.es.get(id);
+    if (!event.id) {
+      res.status(404).json({ errors: ['not found'] })
+      return;
+    }
+    
     await this.es.addVisit(id, res.locals?.user?.id);
     res.json({ status: "ok" });
   }

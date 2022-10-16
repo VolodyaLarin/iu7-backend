@@ -1,28 +1,29 @@
 import {
-  ApiOperationDelete,
   ApiOperationGet,
   ApiOperationPost,
   ApiOperationPut,
   ApiPath,
+  SwaggerDefinitionConstant,
 } from "swagger-express-ts";
 import {
   controller,
-  httpDelete,
   httpGet,
   httpPost,
   httpPut,
   interfaces,
   next,
-  params,
   request,
   requestParam,
   response,
 } from "inversify-express-utils";
 import express from "express";
 import { inject } from "inversify";
-import EventService, { EventFilterModel } from "../services/EventService";
 import GroupService from "../services/GroupService";
 import StudentService, { FieldModel } from "../services/StudentService";
+
+
+import "./models/MetaModel"
+import './models/FieldModel'
 
 import Ajv from "ajv";
 const ajv = new Ajv();
@@ -56,18 +57,22 @@ export class GroupController implements interfaces.Controller {
   }
 
   @ApiOperationPost({
-    path: "/rpc/syncTimetable/{date}",
+    path: "/tasks/syncTimetable/{date}",
     parameters: {
       path: {
-        date: {},
+        date: {
+        },
       },
     },
     description: "Синхронизировать расписание",
     responses: {
-      200: { description: "" },
+      201: { description: "Синхронизировано", model: 'C2StatusOk' },
+      400: { description: "Не корректная дата", model: 'C2Error' },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
-  @httpPost("/rpc/syncTimetable/:date")
+  @httpPost("/tasks/syncTimetable/:date")
   private async syncEvents(
     @requestParam("date") date: string,
     @request() req: express.Request,
@@ -75,8 +80,15 @@ export class GroupController implements interfaces.Controller {
     @next() next: express.NextFunction
   ): Promise<void> {
     const group = res.locals.user.contingent.group;
+    const d = new Date(date);
+    if (!isFinite(d.getTime())) {
+      res.status(400).send({
+        errors: ['invalid date']
+      });
+      return;
+    }
     const events = await this.gs.syncDay(group, new Date(date));
-    res.send({
+    res.status(201).send({
       status: "ok",
       events,
     });
@@ -84,9 +96,11 @@ export class GroupController implements interfaces.Controller {
   @ApiOperationGet({
     path: "/metas",
     parameters: {},
-    description: "Метаданные о группе",
+    description: "Метаданные",
     responses: {
-      200: { description: "" },
+      200: { description: "", model: 'С2GroupMeta' },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
   @httpGet("/metas")
@@ -103,9 +117,11 @@ export class GroupController implements interfaces.Controller {
   @ApiOperationGet({
     path: "/fields",
     parameters: {},
-    description: "Метаданные о полях студентов",
+    description: "Поля личных карточек",
     responses: {
-      200: { description: "" },
+      200: { description: "Успешно", model: 'C2Field', type:SwaggerDefinitionConstant.ARRAY },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
   @httpGet("/fields")
@@ -124,12 +140,16 @@ export class GroupController implements interfaces.Controller {
     parameters: {
       path: {},
       body: {
-        type: "json",
+        type: SwaggerDefinitionConstant.ARRAY,
+        model: 'C2Field'
       },
     },
-    description: "Обновить событие",
+    description: "Обновить поля карточки студента",
     responses: {
-      200: { description: "Объект события" },
+      200: { description: "Поля карточки студента", model: 'C2Field', type: SwaggerDefinitionConstant.ARRAY },
+      400: { description: "Ошибка валидации", model: 'C2ValidationErrors' },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
   @httpPut("/fields")

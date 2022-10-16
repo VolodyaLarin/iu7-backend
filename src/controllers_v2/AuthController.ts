@@ -15,6 +15,7 @@ import GroupService from "../services/GroupService";
 
 import "./models/UserModel"
 import { C2UserModel } from "./models/UserModel";
+import StatsService from "../services/StatsService";
 
 @ApiPath({
   path: "/api/v2/auth",
@@ -25,7 +26,8 @@ export class AuthController implements interfaces.Controller {
   constructor(
     @inject("CasService") private cas: CasService,
     @inject("AuthService") private auth: AuthService,
-    @inject("GroupService") private gs: GroupService
+    @inject("GroupService") private gs: GroupService,
+    @inject("StatsService") private ss: StatsService,
   ) {}
   @ApiOperationGet({
     description: "Переход к системе Cas",
@@ -100,10 +102,12 @@ export class AuthController implements interfaces.Controller {
     else {
       const x = await this.gs.getStudents(res.locals.user.contingent.group);
 
+      const score = await this.ss.visitScore(res.locals.user.id);
       return res.send(
         Object.assign({}, res.locals.user, {
           student: x.find((xx) => xx.id == res.locals.user.id)?.student,
-        })
+          score
+        }),
       );
     }
     

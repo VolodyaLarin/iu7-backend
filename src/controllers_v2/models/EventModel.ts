@@ -28,12 +28,12 @@ export class C2VisitModel {
   })
   eventId: string;
 
-  @ApiModelProperty({
-    description: "user",
-    required: false,
-    model: "C2UserModel"
-  })
-  user?: C2UserModel;
+  // @ApiModelProperty({
+  //   description: "user",
+  //   required: false,
+  //   model: "C2UserModel"
+  // })
+  // user?: C2UserModel;
 }
 
 @ApiModel({

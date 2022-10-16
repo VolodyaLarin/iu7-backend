@@ -1,5 +1,5 @@
 {
-  "port":8055,
+  "port":8056,
   "knex": {
     "client": "postgresql",
     "connection": {
@@ -13,7 +13,7 @@
     "database": "db"
   },
   "cas": {
-    "redirectUrl": "http://localhost:8055/auth/cas_callback",
+    "redirectUrl": "http://localhost:8056/auth/cas_callback",
     "casUrl": "https://proxy.bmstu.ru:8443"
   },
   "bitop": {

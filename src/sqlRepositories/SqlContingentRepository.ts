@@ -53,7 +53,7 @@ export class SqlContingentRepository implements ContingentRepository {
     return this.getById(id);
   }
   async create(e: Omit<ContingentModel, "id">) : Promise<ContingentModel> {
-    const rows = this.knex("contingent").insert(e);
+    const rows = this.knex("contingent").insert([e], '*');
 
     return this._mapContingent(rows[0]);
   }

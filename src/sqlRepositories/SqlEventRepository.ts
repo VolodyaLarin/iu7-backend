@@ -67,8 +67,9 @@ export default class SqlEventRepository implements EventRepository {
   }
 
   async create(e: Omit<EventModel, "id">): Promise<EventModel> {
-    const id = String((await this.knex("events").insert([e]))[0]);
-    return await this.getById(id);
+    const event = (await this.knex("events").insert([e], '*'))[0];
+
+    return await this.getById(String(event.id));
   }
 
   protected _mapVisit(row): VisitModel {
@@ -110,7 +111,7 @@ export default class SqlEventRepository implements EventRepository {
           user_id: user,
           event_id: id,
         };
-      })
+      }), '*'
     );
 
     return Object.assign({}, this._mapEvent(event), {

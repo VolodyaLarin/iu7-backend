@@ -59,6 +59,24 @@ export class C2ContingentModel {
 }
 
 @ApiModel({
+  description: "StatsScoreModel",
+  name: "C2StatsScoreModel",
+})
+export class StatsScoreModel {
+  @ApiModelProperty({
+    description: "Total number of events",
+    required: true,
+  })
+  total: number;
+
+  @ApiModelProperty({
+    description: "Visited number of events",
+    required: true,
+  })
+  visited: number;
+}
+
+@ApiModel({
   description: "User",
   name: "C2UserModel",
 })
@@ -111,4 +129,11 @@ export class C2UserModel {
     type: SwaggerDefinitionConstant.OBJECT,
   })
   student?: StudentModel;
+
+  @ApiModelProperty({
+    description: "Stats",
+    required: false,
+    model: 'C2StatsScoreModel'
+  })
+  stats?: StatsScoreModel 
 }

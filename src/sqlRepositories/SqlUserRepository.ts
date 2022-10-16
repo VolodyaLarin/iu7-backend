@@ -80,7 +80,6 @@ export class SqlUserRepository implements UserRepository {
   }
 
   async create(user: Omit<UserModel, "id">): Promise<UserModel> {
-    console.log(user)
     const uid = (await this.knex("users").insert([user], '*'))[0];
 
     return this._mapUser(uid);

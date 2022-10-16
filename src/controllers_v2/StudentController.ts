@@ -2,18 +2,15 @@ import Ajv from "ajv";
 const ajv = new Ajv();
 
 import {
-  ApiOperationDelete,
   ApiOperationGet,
-  ApiOperationPost,
-  ApiOperationPut,
+  ApiOperationPatch,
   ApiPath,
+  SwaggerDefinitionConstant,
 } from "swagger-express-ts";
 import {
   controller,
-  httpDelete,
   httpGet,
-  httpPost,
-  httpPut,
+  httpPatch,
   interfaces,
   next,
   request,
@@ -22,9 +19,8 @@ import {
 } from "inversify-express-utils";
 import express from "express";
 import { inject } from "inversify";
-import EventService, { EventFilterModel } from "../services/EventService";
+
 import StudentService, {
-  FieldModel,
   StudentModel,
 } from "../services/StudentService";
 import GroupService from "../services/GroupService";
@@ -45,28 +41,13 @@ export class StudentController implements interfaces.Controller {
     additionalProperties: true,
   };
 
-  schemaFields = {
-    type: "array",
-    items: {
-      type: "object",
-      properties: {
-        fieldType: { type: "string" },
-        fieldName: { type: "string" },
-        fieldLabel: { type: "string" },
-      },
-      required: ["fieldType", "fieldName", "fieldLabel"],
-    },
-  };
-
   validate: Ajv.ValidateFunction;
-  validateFields: Ajv.ValidateFunction;
 
   constructor(
     @inject("StudentService") private ss: StudentService,
     @inject("GroupService") private gs: GroupService
   ) {
     this.validate = ajv.compile(this.schema);
-    this.validateFields = ajv.compile(this.schemaFields);
   }
 
   @ApiOperationGet({
@@ -74,14 +55,15 @@ export class StudentController implements interfaces.Controller {
     parameters: {},
     description: "Студенты группы",
     responses: {
-      200: { description: "" },
+      200: { description: "", model:'C2UserModel', type: SwaggerDefinitionConstant.ARRAY },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
   @httpGet("/")
   private async getStudents(
     @request() req: express.Request,
     @response() res: express.Response,
-    @next() next: express.NextFunction
   ): Promise<void> {
     const students = await this.gs.getStudents(
       res.locals.user.contingent.group
@@ -89,7 +71,7 @@ export class StudentController implements interfaces.Controller {
     res.send(students);
   }
 
-  @ApiOperationPut({
+  @ApiOperationPatch({
     path: "/{id}",
     parameters: {
       path: {
@@ -97,14 +79,19 @@ export class StudentController implements interfaces.Controller {
       },
       body: {
         type: "json",
+        description: 'Произвольные поля типа строка'
       },
     },
-    description: "Обновить событие",
+    description: "Обновить карточку студента",
     responses: {
-      200: { description: "Объект события" },
+      200: { description: "Объект события", model: 'C2StatusOk' },
+      400: { description: "Ошибка валидации", model: 'C2ValidateErrors' },
+      401: { description: "Не авторизован", model: 'C2Error' },
+      404: { description: "Не найдено", model: 'C2Error' },
+      403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
-  @httpPut("/:id")
+  @httpPatch("/:id")
   private async putStudent(
     @requestParam("id") id: string,
     @request() req: express.Request,
@@ -119,8 +106,7 @@ export class StudentController implements interfaces.Controller {
       return;
     }
     const student: StudentModel = req.body;
-
     const updated = await this.ss.updateStudent(id, student);
-    res.json(updated);
+    res.json({status: 'ok'});
   }
 }

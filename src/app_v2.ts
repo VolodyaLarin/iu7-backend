@@ -11,14 +11,13 @@ import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
 import { InversifyExpressServer } from "inversify-express-utils";
 import { Db, MongoClient } from "mongodb";
-
+import { DatabaseError } from 'pg-protocol'
 
 // Controllers
 import "./controllers_v2/AuthController";
 import "./controllers_v2/EventController";
 import "./controllers_v2/GroupController";
 import "./controllers_v2/StudentController";
-import "./controllers_v2/StatsController";
 
 import { ContingentMiddleware } from "./controllers_v2/ContingentMiddleware";
 import { AuthMiddleware } from "./controllers_v2/AuthMiddleware";
@@ -153,6 +152,17 @@ const main = async () => {
   });
 
   const app = server.build();
+  app.use((err, req, res, next) => {
+    if (!(err instanceof DatabaseError)) return next(err);
+
+    if (err.code === '42501') {
+      res.status(403).json({
+        errors: ['have not grant to write']
+      })
+    } else {
+      next(err);
+    }
+  })
   app.listen(config.get("port"));
   console.info("Server is listening on port : " + config.get("port"));
 };
