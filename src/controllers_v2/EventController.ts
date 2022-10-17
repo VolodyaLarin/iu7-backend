@@ -193,7 +193,7 @@ export class EventController implements interfaces.Controller {
     @response() res: express.Response,
   ): Promise<void> {
     if (!this.validate(req.body)) {
-      res.send({
+      res.status(400).send({
         errors: this.validate.errors,
       });
       return;

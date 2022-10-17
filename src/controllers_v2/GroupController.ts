@@ -56,39 +56,43 @@ export class GroupController implements interfaces.Controller {
   }
 
   @ApiOperationPost({
-    path: "/tasks/syncTimetable/{date}",
+    path: "/tasks",
     parameters: {
-      path: {
-        date: {
-        },
-      },
+      body: {
+        model: 'C2Task'
+      }
     },
-    description: "Синхронизировать расписание",
+    description: "Создать задачу / Синхронизировать расписание",
     responses: {
-      201: { description: "Синхронизировано", model: 'C2StatusOk' },
-      400: { description: "Не корректная дата", model: 'C2Error' },
+      201: { description: "OK", model: 'C2StatusOk' },
+      400: { description: "Ошибка валидации", model: 'C2Error' },
       401: { description: "Не авторизован", model: 'C2Error' },
       403: { description: "Нет доступа", model: 'C2Error' },
     },
   })
-  @httpPost("/tasks/syncTimetable/:date")
+  @httpPost("/tasks")
   private async syncEvents(
-    @requestParam("date") date: string,
     @request() req: express.Request,
     @response() res: express.Response,
   ): Promise<void> {
+    if (req.body?.command !== 'syncTimetable') {
+      res.status(400).send({
+        errors: ['invalid command']
+      });
+      return;
+    }
     const group = res.locals.user.contingent.group;
-    const d = new Date(date);
+
+    const d = new Date(req.body?.date);
     if (!isFinite(d.getTime())) {
       res.status(400).send({
         errors: ['invalid date']
       });
       return;
     }
-    const events = await this.gs.syncDay(group, new Date(date));
+    const events = await this.gs.syncDay(group, d);
     res.status(201).send({
-      status: "ok",
-      events,
+      status: "ok"
     });
   }
   @ApiOperationGet({
@@ -143,7 +147,7 @@ export class GroupController implements interfaces.Controller {
     description: "Обновить поля карточки студента",
     responses: {
       200: { description: "Поля карточки студента", model: 'C2Field', type: SwaggerDefinitionConstant.ARRAY },
-      400: { description: "Ошибка валидации", model: 'C2ValidationErrors' },
+      400: { description: "Ошибка валидации", model: 'C2ValidateErrors' },
       401: { description: "Не авторизован", model: 'C2Error' },
       403: { description: "Нет доступа", model: 'C2Error' },
     },
@@ -154,7 +158,7 @@ export class GroupController implements interfaces.Controller {
     @response() res: express.Response,
   ): Promise<void> {
     if (!this.validateFields(req.body)) {
-      res.send({
+      res.status(400).send({
         errors: this.validateFields.errors,
       });
       return;

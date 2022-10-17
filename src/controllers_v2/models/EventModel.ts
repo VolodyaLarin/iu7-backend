@@ -178,3 +178,22 @@ export class C2PatchVisitModel {
   })
   id: string
 }
+
+
+@ApiModel({
+  description: "Task",
+  name: "C2Task",
+})
+export class C2Task {
+  @ApiModelProperty({
+    description: "Команда",
+    required: true,
+    example: 'syncTimetable'
+  })
+  command: string
+  @ApiModelProperty({
+    description: "Дата",
+    required: false,
+  })
+  date: string
+}
