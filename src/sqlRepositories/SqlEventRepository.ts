@@ -126,7 +126,7 @@ export default class SqlEventRepository implements EventRepository {
         user_id: user,
         event_id: id,
       },
-    ]);
+    ], '*');
 
     return Object.assign({}, event, {
       visits: visit.map(this._mapVisit),

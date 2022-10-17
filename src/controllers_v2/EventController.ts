@@ -290,7 +290,7 @@ export class EventController implements interfaces.Controller {
       404: { description: "Не найдено", model: 'C2Error' },
     },
   })
-  @httpPatch("/:id/visits")
+  @httpPost("/:id/visits")
   private async visit(
     @requestParam("id") id: string,
     @request() req: express.Request,

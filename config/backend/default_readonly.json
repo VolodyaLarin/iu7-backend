@@ -1,0 +1,24 @@
+{
+  "port":8055,
+  "knex": {
+    "client": "postgresql",
+    "connection": {
+      "database": "postgres",
+      "user":     "readonly",
+      "password": "readonly",
+      "host": "postgres"
+    }
+  },
+  "mongodb": {
+    "url": "mongodb://mongoadmin:secret@mongo:27017/",
+    "database": "db"
+  },
+  "cas": {
+    "redirectUrl": "http://localhost:9090/api/v2/auth/cas_callback",
+    "casUrl": "https://proxy.bmstu.ru:8443"
+  },
+  "bitop": {
+    "api_url": "https://api.bitop.bmstu.ru",
+    "api_token": "bb-at-qdqgelbp9wchnv1m9chx76ysdptv89pgvhrnh7e2ptl1n"
+  }
+}
