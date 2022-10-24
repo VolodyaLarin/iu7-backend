@@ -6,7 +6,7 @@
  */
  exports.up = function(knex) {
     return knex.schema.createTableIfNotExists("visits", (t) => {
-        t.bigIncrements('id').primary();
+        t.uuid('id').primary();
         t.bigInteger('event_id');
         t.bigInteger('user_id');
       });
