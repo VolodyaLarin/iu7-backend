@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  backend1: &backend1
+  backend1:
     build: ./src
     volumes:
       - ./config/backend/default.json:/usr/src/app/config/default.json
@@ -10,31 +10,6 @@ services:
     depends_on:
       - mongo
       - postgres
-    ports:
-      - "5001:8055"
-  backend2:
-    <<: *backend1
-    volumes:
-      - ./config/backend/default_readonly.json:/usr/src/app/config/default.json
-    ports:
-      - "5002:8055"
-  backend3:
-    <<: *backend1
-    volumes:
-      - ./config/backend/default_readonly.json:/usr/src/app/config/default.json
-    ports:
-      - "5003:8055"
-  miror:
-    <<: *backend1
-    ports:
-      - "5004:8055"
-  backend_legacy:
-    <<: *backend1
-    entrypoint: ["node", "app.js"]
-    volumes:
-      - ./config/backend/default_legacy.json:/usr/src/app/config/default.json
-    ports:
-      - "5005:8055"
   mongo:
     image: "mongo"
     environment:
@@ -52,28 +27,14 @@ services:
       - /tmp/pgdata:/var/lib/postgresql/data
     cpu_count: 4
     mem_limit: 6g
-  pgadmin:
-    image: 'dpage/pgadmin4'
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=user@domain.com
-      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
-      # - SCRIPT_NAME=/pgadmin4
-      - traefik.frontend.pgadmin4.rule=Host(`host.example.com`) && PathPrefix(`/pgadmin4`)
   nginx:
     image: 'byjg/nginx-extras'
     ports:
       - "9090:9090"
     links:
       - "backend1:backend1"
-      - "backend2:backend2"
-      - "backend3:backend3"
-      - "miror:my_mirror"
-      - "pgadmin:pgadmin"
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./static:/usr/share/nginx/static
     depends_on:
       - backend1
-      - backend2
-      - backend3
-      - miror
